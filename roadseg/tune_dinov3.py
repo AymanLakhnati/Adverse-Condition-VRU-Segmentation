@@ -26,7 +26,7 @@ from torch.nn import functional as F
 from torch.utils.data import DataLoader,Dataset
 
 from roadseg.metrics import CONDITIONS,confusion_matrix,metrics_from_confusion
-from roadseg.train_dinov3 import DenseDINOv3,MODEL
+from roadseg.train_dinov3 import DenseDINOv3,MODEL,training_content_hash
 from roadseg.train_head import TrainingCrops,collect_training_rows,file_hash,json_write,tensor_hash
 
 RATES=(0.0003,0.001,0.003)
@@ -44,8 +44,31 @@ def recording_family(sequence):
     return f"recording_{match.group(1)}" if match else sequence
 
 
+def nearest_family_subset(ordered_sizes,fraction=0.2):
+    """Closest nonempty proper subset by image count, without inspecting labels.
+
+    Family order is already seeded by the caller. Equal-distance count ties
+    favor more development images. Equal-count subset ties favor the earliest
+    lexicographic index tuple in that seeded order.
+    """
+    sizes=tuple(int(size) for size in ordered_sizes)
+    if len(sizes)<2 or any(size<1 for size in sizes) or not 0<fraction<1:
+        raise ValueError("At least two positive family sizes and an interior fraction required")
+    attainable={0:()}
+    for index,size in enumerate(sizes):
+        for count,indices in list(attainable.items()):
+            target_count=count+size
+            candidate=indices+(index,)
+            if target_count not in attainable or candidate<attainable[target_count]:
+                attainable[target_count]=candidate
+    total=sum(sizes)
+    candidates=[count for count in attainable if 0<count<total]
+    selected_count=min(candidates,key=lambda count:(abs(count-total*fraction),-count))
+    return attainable[selected_count]
+
+
 def sequence_holdout(rows,seed=42,fraction=0.2):
-    """Choose a shuffled group prefix nearest20% images within each condition.
+    """Choose a seeded family subset nearest20% images within each condition.
 
     A group is condition/recording-family, conservatively merging GoPro chapters.
     At least one development and one fitting group are required per condition.
@@ -73,10 +96,8 @@ def sequence_holdout(rows,seed=42,fraction=0.2):
         if len(keys)<2:
             raise ValueError(f"At least two training recording families needed for {condition}")
         keys=[keys[int(i)] for i in rng.permutation(len(keys))]
-        cumulative=np.cumsum([len(groups[key]) for key in keys])
-        target=sum(len(groups[key]) for key in keys)*fraction
-        count=min(range(1,len(keys)),key=lambda n:abs(float(cumulative[n-1])-target))
-        development_groups.update(keys[:count])
+        indices=nearest_family_subset([len(groups[key]) for key in keys],fraction)
+        development_groups.update(keys[index] for index in indices)
     fit,development=[],[]
     for key in sorted(groups):
         destination=development if key in development_groups else fit
@@ -163,7 +184,7 @@ def tune(args):
            "recording_family_aliases":{group:sorted({r["sequence_directory"] for r in fit+development if r["sequence_group"]==group})
                                        for group in sorted({r["sequence_group"] for r in fit+development})},
            "recording_family_rule":"Within condition, GOPR#### and GPxx#### share recording_####; unmatched names remain unchanged",
-           "split_rule":"Within each condition, conservatively merge GoPro chapter directories by recording number, then choose seeded shuffled recording-family prefix nearest20%image count; retain at least1family in each partition",
+           "split_rule":"Within each condition, conservatively merge GoPro chapters by recording number, seed-shuffle families, then use dynamic programming to select a nonempty proper family subset nearest20%image count; equal-distance count ties favor more development images and equal-count subset ties favor lexicographically earliest seeded-family indices",
            "split_limitation":"Few large recording families can make the development fraction differ substantially from20%; recording grouping cannot prove geographic or scene independence"}
     random.seed(args.seed);np.random.seed(args.seed);torch.manual_seed(args.seed)
     if torch.cuda.is_available():
@@ -184,6 +205,7 @@ def tune(args):
             "device":args.device,"gpu":torch.cuda.get_device_name(0) if args.device.startswith("cuda") else None,
             "initial_head_sha256":initial_hash,"encoder_frozen":True,"head_parameters":7315,
             "split":split,"all_training_ids_sha256":hashlib.sha256("\n".join(sorted(row["image_id"] for row in rows)).encode()).hexdigest(),
+            "all_training_content_sha256":training_content_hash(rows),
             "fit_manifest_sha256":file_hash(args.output/"fit_manifest.csv"),
             "development_manifest_sha256":file_hash(args.output/"development_manifest.csv"),
             "started_utc":time.strftime("%Y-%m-%dT%H:%M:%SZ",time.gmtime()),"trials":[]}

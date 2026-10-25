@@ -31,6 +31,12 @@ MODEL = "vit_small_patch16_dinov3.lvd1689m"
 LOG = logging.getLogger("dinov3-dense-training")
 
 
+def training_content_hash(rows):
+    """Bind refitting to the same image AND label bytes used during tuning."""
+    values=sorted((row["image_id"],row["image_sha256"],row["label_sha256"]) for row in rows)
+    return hashlib.sha256(json.dumps(values,separators=(",",":")).encode()).hexdigest()
+
+
 class DenseDINOv3(nn.Module):
     """Frozen normalized patch tokens plus a newly initialized 19-class head."""
     def __init__(self, pretrained=True):
@@ -169,6 +175,9 @@ def train(args):
     for row in rows:
         row["image_sha256"]=file_hash(row["image_path"])
         row["label_sha256"]=file_hash(row["label_path"])
+    content_hash=training_content_hash(rows)
+    if tuning is not None and tuning.get("all_training_content_sha256")!=content_hash:
+        raise ValueError("Training image or label bytes differ from the tuning dataset")
     with open(args.output/"training_manifest.csv","w",newline="",encoding="utf-8") as handle:
         writer=csv.DictWriter(handle,fieldnames=list(rows[0]));writer.writeheader();writer.writerows(rows)
     model=DenseDINOv3(pretrained=True).to(args.device)
@@ -198,6 +207,7 @@ def train(args):
             "refit_initialization":f"Fresh seed{args.seed} head, not selected trial weights" if tuning else "Fresh seeded head",
             "learning_rate_schedule":"fixed","loss":"CrossEntropyLoss(ignore_index=255), no class weights",
             "train_split":"Only ACDC adverse train labels","training_images":len(rows),"available_train_images":available,
+            "all_training_content_sha256":content_hash,
             "limited_smoke_run":args.limit is not None,"crop_size":512,"flip_probability":0.5,
             "official_validation_used_for_selection":False,
             "internal_training_development_used_for_learning_rate_selection":bool(tuning),

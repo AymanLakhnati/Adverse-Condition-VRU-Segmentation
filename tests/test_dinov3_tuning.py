@@ -2,7 +2,8 @@ from collections import Counter
 
 import pytest
 
-from roadseg.tune_dinov3 import choose_trial,sequence_holdout
+from roadseg.tune_dinov3 import choose_trial,sequence_holdout,nearest_family_subset
+from roadseg.train_dinov3 import training_content_hash
 
 
 def fixture_rows():
@@ -66,3 +67,25 @@ def test_selection_uses_vru_objective_and_predeclared_fallback():
     selected,metric,fallback=choose_trial(trials)
     assert selected["learning_rate"]==0.003
     assert metric=="development_miou_present" and fallback is not None
+
+
+def test_refit_content_identity_detects_label_changes_under_same_ids():
+    rows=[{"image_id":"a","image_sha256":"image_a","label_sha256":"label_a"},
+          {"image_id":"b","image_sha256":"image_b","label_sha256":"label_b"}]
+    original=training_content_hash(rows)
+    assert training_content_hash(list(reversed(rows)))==original
+    rows[0]["label_sha256"]="changed_label_a"
+    assert training_content_hash(rows)!=original
+
+
+def test_nearest_family_subset_uses_nonprefix_combination_and_more_coverage_tie():
+    # A prefix can only reach240 or246 images, but a later family has154.
+    # Six and154 are equally distant from the80-image target: choose154.
+    sizes=(240,6,154)
+    indices=nearest_family_subset(sizes,0.2)
+    assert indices==(2,)
+    assert sum(sizes[i] for i in indices)==154
+    # Attaining80 requires skipping the first family, then combining two others.
+    assert nearest_family_subset((100,35,45,220),0.2)==(1,2)
+    # Equal-count subsets use the caller's seeded ordering deterministically.
+    assert nearest_family_subset((40,40,40,80),0.2)==(0,)

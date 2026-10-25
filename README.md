@@ -2,7 +2,7 @@
 
 MAAI901 applied vision transformer project by Ayman Lakhnati.
 
-[![Reproducibility checks](https://github.com/AymanLakhnati/Adverse-Condition-VRU-Segmentation/actions/workflows/tests.yml/badge.svg)](https://github.com/AymanLakhnati/Adverse-Condition-VRU-Segmentation/actions/workflows/tests.yml)
+[Automated reproducibility workflow](https://github.com/AymanLakhnati/Adverse-Condition-VRU-Segmentation/actions/workflows/tests.yml). Local test evidence is saved under `results/reproducibility/`. The GitHub-hosted job could not start because of an account billing lock; it is not reported as a passing hosted run.
 
 [Open the executable notebook in Colab](https://colab.research.google.com/github/AymanLakhnati/Adverse-Condition-VRU-Segmentation/blob/main/notebooks/Adverse_Condition_VRU_Segmentation.ipynb). Select a GPU runtime before running it. The notebook can also run locally or in Kaggle.
 
@@ -68,7 +68,7 @@ The primary metric is condition-specific VRU mean IoU: the arithmetic mean of th
 
 The HRDA/MIC inference port preserves the official dual-scale attention, 1024-pixel outer windows with stride 512, and 512-pixel detail windows with stride 256. It processes detail crops sequentially to reduce memory. The MiT backbone was checked numerically against the official source; checkpoint loading rejects missing and unexpected student tensors. Modern PyTorch kernels can still differ numerically from the original environment. Published training logs provide an additional aggregate validation reference, not new experimental results.
 
-DINOv3 uses frozen normalized patch features with stride 16 and a learned 1x1 convolution into 19 classes. Before the full fit, three one-epoch AdamW trials compare learning rates **0.0003, 0.001 and 0.003**. Within each weather condition, matching GoPro chapters such as `GOPR0376` and `GP010376` stay together as one conservative recording family. A seed-42 shuffled family-group prefix targets the nearest feasible 20% development holdout. Large families can shift the actual fraction; the saved manifests report exact counts. Fitting and development recording families remain disjoint. Trials share the same fresh head initialization and fitting crop/flip randomness.
+DINOv3 uses frozen normalized patch features with stride 16 and a learned 1x1 convolution into 19 classes. Before the full fit, three one-epoch AdamW trials compare learning rates **0.0003, 0.001 and 0.003**. Within each weather condition, matching GoPro chapters such as `GOPR0376` and `GP010376` stay together as one conservative recording family. A seed-42 ordered recording-family subset targets the nearest feasible 20% development holdout. Equal-distance count ties favor more development frames; equal-count subsets follow seeded family order. Large families can shift the actual fraction; the saved manifests report exact counts. Fitting and development recording families remain disjoint. Trials share the same fresh head initialization and fitting crop/flip randomness.
 
 Selection maximizes pooled person/rider/bicycle mean IoU on one deterministic 512-pixel center crop per development image; exact ties choose the lower LR. Only if all three VRU means are undefined does the declared present-class mIoU fallback apply, and the saved results explicitly disclose it. This one-epoch, center-crop search is a limited proxy rather than exhaustive tuning. **Official validation and test images never enter selection.**
 

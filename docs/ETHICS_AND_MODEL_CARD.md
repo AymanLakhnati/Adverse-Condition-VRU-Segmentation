@@ -22,6 +22,8 @@ Small, distant, occluded road users and narrow bicycle structures can vanish aft
 
 ## Responsible interpretation
 
+Recording-family disjointness applies **only to the internal fitting/development tuning split**. A filename-based audit finds shared heuristic GoPro recording-family names between official training and validation despite disjoint frame IDs. We therefore cannot independently claim recording-disjoint official evaluation. Shared names alone do not establish duplicate frames or geographic leakage: official geographic separation can still hold for distinct road segments within a recording. Keep this dependence limitation separate from the internal tuning safeguards.
+
 Report every prespecified condition, including regressions and sparse rider/bicycle support. A worst-condition gain can conceal class-specific harm, and a minimum over only four domains cannot bound unseen hazards. Paired image bootstrap intervals do not cover correlated scenes, training-seed variation or deployment shift. The released HRDA/MIC artifacts have different seeds and were evaluated by their authors on ACDC validation; this is an external-checkpoint comparison, not an untouched-test causal ablation. No local evaluation may be described as an official test-server submission unless one actually occurred.
 
 Reusing released weights and freezing a compact encoder reduce local training work; record measured runtime/device rather than fabricating energy or carbon savings. Stronger future validation would include independent geographic/camera data, explicit small-instance recall, diverse conditions, uncertainty/rejection and human safety review. These are future requirements, not completed checks.

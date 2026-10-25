@@ -49,7 +49,7 @@ def main():
             relative = candidate.relative_to(ROOT)
             if not candidate.is_file() or any(part in {"predictions", "private", "sample_output"} for part in relative.parts):
                 continue
-            if candidate.suffix in {".json", ".csv", ".npz"}:
+            if candidate.suffix in {".json", ".csv", ".npz", ".xml"}:
                 files.add(candidate)
             elif relative.parts[:2] == ("results", "figures") and candidate.suffix in {".png", ".pdf"}:
                 files.add(candidate)
