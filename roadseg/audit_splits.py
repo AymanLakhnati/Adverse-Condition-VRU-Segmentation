@@ -12,6 +12,7 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--data-root',type=Path,default=Path('data/acdc'))
     parser.add_argument('--output',type=Path,default=Path('results/reproducibility/split_audit.json'))
+    parser.add_argument('--check-image-headers',action='store_true',help='Require all RGB/GT pairs and aligned original 1920x1080 headers')
     args=parser.parse_args()
     rows=[]
     for condition in CONDITIONS:
@@ -28,6 +29,17 @@ def main():
     overlap=sorted(ids['train']&ids['val'])
     if overlap:
         raise ValueError('Identical frame IDs occur in training and validation')
+    checked=0
+    if args.check_image_headers:
+        from PIL import Image
+        for row in rows:
+            parent=Path(row['condition'])/row['split']/row['chapter']
+            rgb=args.data_root/'rgb_anon'/parent/(row['image_id']+'_rgb_anon.png')
+            gt=args.data_root/'gt'/parent/(row['image_id']+'_gt_labelTrainIds.png')
+            with Image.open(rgb) as image, Image.open(gt) as mask:
+                if image.size!=(1920,1080) or mask.size!=image.size or image.mode!='RGB' or mask.mode not in ('L','P'):
+                    raise ValueError(f'Unexpected RGB/GT header or spatial alignment: {row["image_id"]}')
+            checked+=1
     families={c:{s:{r['recording_name_family'] for r in rows if r['condition']==c and r['split']==s}
                  for s in ('train','val')} for c in CONDITIONS}
     result={'scope':'Official train/validation label metadata, not perceptual duplicate detection',
@@ -36,6 +48,8 @@ def main():
             'shared_recording_name_families':{c:sorted(families[c]['train']&families[c]['val']) for c in CONDITIONS},
             'interpretation':'Recording-name grouping is a conservative filename heuristic. Shared families do not prove duplicate frames, geographic overlap or temporal adjacency. Official splits are preserved. Internal tuning groups remain disjoint; official train/validation recording independence is not established.',
             'near_or_perceptual_duplicates_checked':False}
+    result['aligned_original_rgb_gt_headers_checked']=checked
+    result['header_check_limit']='Headers establish dimensions and modes, not perceptual duplicate absence or every pixel value'
     args.output.parent.mkdir(parents=True,exist_ok=True)
     args.output.write_text(json.dumps(result,indent=2),encoding='utf-8')
     print(json.dumps(result,indent=2))

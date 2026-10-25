@@ -2,7 +2,7 @@
 
 MAAI901 applied vision transformer project by Ayman Lakhnati.
 
-[Automated reproducibility workflow](https://github.com/AymanLakhnati/Adverse-Condition-VRU-Segmentation/actions/workflows/tests.yml). Local test evidence is saved under `results/reproducibility/`. The GitHub-hosted job could not start because of an account billing lock; it is not reported as a passing hosted run.
+[Automated reproducibility workflow](https://github.com/AymanLakhnati/Adverse-Condition-VRU-Segmentation/actions/workflows/tests.yml). Local validation evidence is provided under `results/reproducibility/`; the hosted workflow did not execute in this environment. No hosted-pass claim is made.
 
 [Open the executable notebook in Colab](https://colab.research.google.com/github/AymanLakhnati/Adverse-Condition-VRU-Segmentation/blob/main/notebooks/Adverse_Condition_VRU_Segmentation.ipynb). Select a GPU runtime before running it. The notebook can also run locally or in Kaggle.
 
@@ -18,6 +18,18 @@ The DINOv3 model adds a recent transformer family and fresh training to the appl
 ## Reproduce
 
 Python 3.12 is tested. A CUDA GPU is recommended. The sequential inference port was designed to fit a 4 GB GTX 1650 Ti.
+
+`main` contains the project's measured reference evidence, including nonempty result/training folders, while large prediction masks remain excluded. For a **clean rerun**, create a separate checkout pinned to the frozen source-only experiment commit. This preserves the published evidence and avoids mixing prior manifests, training outputs or platform-specific inference identities into a new run:
+
+```powershell
+git clone --no-checkout https://github.com/AymanLakhnati/Adverse-Condition-VRU-Segmentation.git VRU-Segmentation-clean
+cd VRU-Segmentation-clean
+git checkout --detach 2b4a5325f7b5843a6d5e5f1d52922a05f926c9c7
+git rev-parse HEAD
+git status --short --branch
+```
+
+Use a new directory name if `VRU-Segmentation-clean` already exists. Do not reset, delete or move an existing working checkout or evidence directory. The detached ref identifies the exact experiment source; later `main` documentation can be read separately. Install and run the following commands inside this clean checkout. The Colab/Kaggle notebook performs the same pinned separate-clone setup automatically and prints its actual commit/ref. Existing local notebook sessions can instead reuse completed artifacts when their provenance matches; this is distinct from a fresh rerun. Cross-platform bitwise identity is not assumed.
 
 ```powershell
 python -m venv .venv
@@ -58,7 +70,7 @@ python -m roadseg.visualize
 
 After training, predict a single downloaded ACDC image with `python -m roadseg.predict IMAGE_PATH --model dinov3`. Select `--model hrda` or `--model mic` for a released checkpoint. The command writes a numeric label mask, an abstract color preview and a JSON sidecar with class pixel counts. Pixel counts are not object detections or counts of people.
 
-The official RGB package is approximately 15.6 GB and its endpoint does not support range requests. The streaming downloader reads the package while retaining only the adverse training and validation images, checks each retained ZIP member's CRC32, and verifies the label archive's official MD5. It does **not** claim to verify the full RGB archive MD5. Raw data remain local. The downloader uses OS certificate roots without disabling TLS validation.
+The official RGB package is approximately 15.6 GiB (16.7 GB) and its endpoint does not support range requests. The streaming downloader reads the package while retaining only the adverse training and validation images, checks each retained ZIP member's CRC32, and verifies the label archive's official MD5. It does **not** claim to verify the full RGB archive MD5. Raw data remain local. The downloader uses OS certificate roots without disabling TLS validation.
 
 Tuning and training refuse to overwrite nonempty output directories. The notebook reuses a completed search/refit only after checking their provenance. If the search completed without a refit, launch `roadseg.train_dinov3` with the actual saved `--learning-rate` and `--tuning-results outputs/dinov3_tuning/tuning_results.json`; trial weights are never resumed as the final model. Preserve incomplete runs and choose new output directories when restarting them. Inference can resume using unchanged model/settings provenance. Never use official validation outcomes to select the DINOv3 learning rate or alter the protocol while retaining an untouched evaluation claim.
 
