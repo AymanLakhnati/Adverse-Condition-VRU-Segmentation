@@ -157,14 +157,19 @@ def _aligned_name(path, image_id):
     return stem == image_id or (stem.startswith(image_id) and stem[len(image_id):len(image_id) + 1] in ("_", "-", "."))
 
 
-def evaluate_manifest(manifest_path, output, bootstrap_repeats=1000, seed=42, require_official_validation=False):
-    """Evaluate explicit path pairs relative to manifest directory.
+def evaluate_manifest(manifest_path, output, bootstrap_repeats=1000, seed=42, require_official_validation=False, path_root=None):
+    """Evaluate explicit path pairs relative to manifest directory by default.
 
     Names must start with their image_id. GT names must contain
     labelTrainIds, making the label encoding declaration explicit.
     Full original ACDC validation counts can be required with a CLI flag.
+    An explicit path_root instead resolves relative mask paths against that
+    directory, e.g. the project root used by run_inference.py manifests.
     """
     manifest_path, output = Path(manifest_path).resolve(), Path(output)
+    path_root = manifest_path.parent if path_root is None else Path(path_root).resolve()
+    if not path_root.is_dir():
+        raise ValueError(f"Mask path root must be an existing directory: {path_root}")
     frame = pd.read_csv(manifest_path, dtype=str, keep_default_na=False)
     required = {"image_id", "condition", "gt_path", "hrda_pred_path", "mic_pred_path"}
     if not required.issubset(frame.columns) or frame.empty:
@@ -184,7 +189,7 @@ def evaluate_manifest(manifest_path, output, bootstrap_repeats=1000, seed=42, re
         paths = {}
         for column in used:
             candidate = Path(row[column])
-            path = candidate.resolve() if candidate.is_absolute() else (manifest_path.parent / candidate).resolve()
+            path = candidate.resolve() if candidate.is_absolute() else (path_root / candidate).resolve()
             if not _aligned_name(path, row["image_id"]):
                 raise ValueError(f"Filename/image_id alignment failed: {row['image_id']} / {path.name}")
             if path in used[column]:
@@ -207,6 +212,7 @@ def evaluate_manifest(manifest_path, output, bootstrap_repeats=1000, seed=42, re
           matches_original_validation_counts=counts == expected,
           caveat="Counts alone cannot verify official split membership or provenance",
           gt_encoding="trainIds 0..18; ignore 255", ground_truth_rows=True,
+          mask_path_root=str(path_root),
           manifest_sha256=hashlib.sha256(manifest_path.read_bytes()).hexdigest())
     if bootstrap_repeats:
         summary["bootstrap"] = paired_bootstrap(matrices, frame.condition.to_numpy(), bootstrap_repeats, seed)
@@ -244,10 +250,11 @@ def main():
     parser.add_argument("--bootstrap", type=int, default=1000, help="Paired bootstrap repeats; 0 disables")
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--require-official-validation", action="store_true")
+    parser.add_argument("--path-root",type=Path,help="Resolve relative mask paths from this directory (default: manifest directory)")
     args = parser.parse_args()
     if args.bootstrap < 0:
         parser.error("--bootstrap must be nonnegative")
-    result = evaluate_manifest(args.manifest, args.output, args.bootstrap, args.seed, args.require_official_validation)
+    result = evaluate_manifest(args.manifest, args.output, args.bootstrap, args.seed, args.require_official_validation, path_root=args.path_root)
     print(json.dumps(result["hypothesis"], indent=2))
 
 

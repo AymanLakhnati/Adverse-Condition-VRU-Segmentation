@@ -13,10 +13,6 @@ try {
     while (-not (Test-Path -LiteralPath 'data\acdc\download_provenance.json')) {
         Start-Sleep -Seconds 15
     }
-    & $taskPython -u -m roadseg.train_dinov3 --device cuda --batch-size 4 --epochs 5 --seed 42
-    if ($LASTEXITCODE -ne 0) { throw 'DINOv3 training failed' }
-    & $taskPython -u -m roadseg.evaluate_dinov3 --device cuda --batch-size 4
-    if ($LASTEXITCODE -ne 0) { throw 'DINOv3 evaluation failed' }
     do {
         Start-Sleep -Seconds 15
         $primaryDone = $false
@@ -24,8 +20,12 @@ try {
             try { $primaryDone = (Get-Content -Raw -LiteralPath 'results\inference_run.json' | ConvertFrom-Json).status -eq 'completed' } catch {}
         }
     } while (-not $primaryDone)
-    & $taskPython -u -m roadseg.metrics results/manifest.csv --output results --bootstrap 2000 --require-official-validation
+    & $taskPython -u -m roadseg.metrics results/manifest.csv --output results --bootstrap 2000 --require-official-validation --path-root .
     if ($LASTEXITCODE -ne 0) { throw 'Primary evaluation failed' }
+    & $taskPython -u -m roadseg.tune_dinov3 --device cuda --refit
+    if ($LASTEXITCODE -ne 0) { throw 'DINOv3 tuning or training failed' }
+    & $taskPython -u -m roadseg.evaluate_dinov3 --device cuda --batch-size 4
+    if ($LASTEXITCODE -ne 0) { throw 'DINOv3 evaluation failed' }
     & $taskPython -u -m roadseg.visualize
     if ($LASTEXITCODE -ne 0) { throw 'Visualization failed' }
     'ALL EXPERIMENTS AND FIGURES COMPLETED' | Set-Content -LiteralPath 'working\experiments_complete.txt'

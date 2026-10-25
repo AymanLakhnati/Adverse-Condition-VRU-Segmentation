@@ -46,9 +46,12 @@ def main():
     ax.legend(frameon=False)
     point = [primary["hypothesis"]["condition_delta_pp"][c] for c in CONDITIONS]
     intervals = [primary["bootstrap"]["endpoints"][c]["percentile_95_pp"] for c in CONDITIONS]
-    delta_ax.errorbar(point, x, xerr=np.array([[p - interval[0] for p, interval in zip(point, intervals)],
-                                              [interval[1] - p for p, interval in zip(point, intervals)]]),
-                      fmt="o", color=COLORS[1], capsize=4)
+    # Percentile intervals need not contain the plug-in estimate. Draw their
+    # endpoints directly rather than assuming nonnegative error-bar lengths.
+    for row, (estimate, interval) in enumerate(zip(point, intervals)):
+        delta_ax.hlines(row, interval[0], interval[1], color=COLORS[1], linewidth=1.3)
+        delta_ax.vlines(interval, row - .08, row + .08, color=COLORS[1], linewidth=1.3)
+        delta_ax.plot(estimate, row, "o", color=COLORS[1])
     delta_ax.axvline(0, color="#888888", linewidth=.8)
     delta_ax.axvline(-1, color="#bf7045", linestyle="--", linewidth=1)
     delta_ax.set(yticks=x, yticklabels=LABELS, xlabel="MIC minus HRDA (percentage points)",
@@ -144,6 +147,26 @@ def main():
     fig.tight_layout(rect=[.025, .045, 1, .94], h_pad=1.5)
     save("sample_predictions")
     (FIG / "sample_selection.json").write_text(json.dumps(selection_records, indent=2))
+    # A separate full-width report figure keeps printed labels readable.
+    fig, axes = plt.subplots(4, 2, figsize=(7, 7.5))
+    for r, (row, selection) in enumerate(zip(selected, selection_records)):
+        box = selection["crop_y1_y2_x1_x2"]
+        for j, path in enumerate((row.hrda_pred_path, row.mic_pred_path)):
+            with Image.open(path) as image:
+                mask = np.asarray(image)
+            axes[r, j].imshow(palette[mask[box[0]:box[1], box[2]:box[3]]])
+            axes[r, j].axis("off")
+            if r == 0:
+                axes[r, j].set_title(("HRDA", "MIC(HRDA)")[j], fontsize=11)
+            if j == 0:
+                axes[r, j].text(-.04, .5, LABELS[r], rotation=90, va="center", ha="right",
+                                transform=axes[r, j].transAxes, fontsize=10)
+            axes[r, j].text(.5, -.03, row.image_id, transform=axes[r, j].transAxes,
+                            ha="center", va="top", fontsize=8.5)
+    fig.legend(handles=[Patch(color=palette[i] / 255, label=CLASS_NAMES[i]) for i in VRU],
+               loc="lower center", ncol=3, frameon=False, fontsize=10)
+    fig.tight_layout(rect=[.04, .045, 1, 1], h_pad=1.6)
+    save("sample_predictions_report")
     print(FIG.resolve())
 
 

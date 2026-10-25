@@ -152,3 +152,27 @@ def test_manifest_rejects_misaligned_names(tmp_path):
                        hrda_pred_path="foo_hrda.png", mic_pred_path="foo_mic.png")]).to_csv(tmp_path / "manifest.csv", index=False)
     with pytest.raises(ValueError, match="alignment"):
         evaluate_manifest(tmp_path / "manifest.csv", tmp_path / "out", 0)
+
+
+def test_explicit_project_path_root_for_nested_inference_manifest(tmp_path):
+    project=tmp_path/"project"
+    (project/"data").mkdir(parents=True)
+    (project/"results"/"predictions").mkdir(parents=True)
+    image_id="sample_fog"
+    gt=np.array([[11,12,18,255]],dtype=np.uint8)
+    Image.fromarray(gt).save(project/"data"/f"{image_id}_gt_labelTrainIds.png")
+    for model in ("hrda","mic"):
+        Image.fromarray(gt).save(project/"results"/"predictions"/f"{image_id}_{model}.png")
+    manifest=project/"results"/"inference_manifest.csv"
+    pd.DataFrame([dict(image_id=image_id,condition="fog",
+        gt_path=f"data/{image_id}_gt_labelTrainIds.png",
+        hrda_pred_path=f"results/predictions/{image_id}_hrda.png",
+        mic_pred_path=f"results/predictions/{image_id}_mic.png")]).to_csv(manifest,index=False)
+    # Preserve the documented default, without guessing a parent directory.
+    with pytest.raises(FileNotFoundError):
+        evaluate_manifest(manifest,project/"default_out",bootstrap_repeats=0)
+    result=evaluate_manifest(manifest,project/"explicit_out",bootstrap_repeats=0,path_root=project)
+    assert result["dataset"]["images"]==1
+    assert result["models"]["mic"]["pooled"]["vru_mean_iou"]==1
+    assert result["models"]["hrda"]["pooled"]["valid_pixels"]==3
+    assert result["dataset"]["mask_path_root"]==str(project.resolve())
