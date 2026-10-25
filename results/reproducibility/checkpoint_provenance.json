@@ -1,0 +1,14 @@
+{
+  "hrda": {
+    "source": "https://drive.google.com/file/d/1Pwb1NAKx-WeVdhKEfafn29_JP4iEyKQM/view",
+    "path": "checkpoints\\hrda\\csHR2acdcHR_hrda_d3a68\\iter_40000_relevant.pth",
+    "sha256": "85e809060244684e7d85f9aa0aa4b0bdacff2f7b7fce92e90e2917ff5c47923d",
+    "original_code": "https://github.com/lhoyer/HRDA"
+  },
+  "mic": {
+    "source": "https://drive.google.com/file/d/10RNOAyUY5nYKzIIbNTie458r9etzfvtc/view",
+    "path": "checkpoints\\mic\\csHR2acdcHR_mic_hrda_b52f1\\iter_40000_relevant.pth",
+    "sha256": "02a9eba7209f1911fd17c61200de5bf60e2ce389b0bc79d1b1319ba61a9b8b61",
+    "original_code": "https://github.com/lhoyer/MIC"
+  }
+}

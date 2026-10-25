@@ -1,0 +1,57 @@
+{
+  "frozen_source_commit": "2b4a5325f7b5843a6d5e5f1d52922a05f926c9c7",
+  "public_clone_and_detached_checkout_succeeded": true,
+  "core_experiment_files_byte_identical": false,
+  "core_files": {
+    "src/mit_backbone.py": {
+      "current_sha256": "8ee4b54f1316c4382a9be53774fb34ad2f83587f199636af1507a8e6e3e9edb1",
+      "frozen_sha256": "5d5a0acfbaa8d26127c75409d3266768d26e39b548bcb8a4ec7099a8656f762a",
+      "current_source_lf_sha256": "5d5a0acfbaa8d26127c75409d3266768d26e39b548bcb8a4ec7099a8656f762a",
+      "frozen_source_lf_sha256": "5d5a0acfbaa8d26127c75409d3266768d26e39b548bcb8a4ec7099a8656f762a"
+    },
+    "src/hrda_inference.py": {
+      "current_sha256": "914990198db83e1c69ce082cb13dfaf7db98bcb23d6e33becd778e921b34f963",
+      "frozen_sha256": "914990198db83e1c69ce082cb13dfaf7db98bcb23d6e33becd778e921b34f963",
+      "current_source_lf_sha256": "d7615292dd0673afbc6e3f2518cac18da6a3a68f85a0107d490037b5fac450d9",
+      "frozen_source_lf_sha256": "d7615292dd0673afbc6e3f2518cac18da6a3a68f85a0107d490037b5fac450d9"
+    },
+    "roadseg/run_inference.py": {
+      "current_sha256": "902d5465e48c8bae36ff1f8241138447278220cc064623e58a1db910e367d8ae",
+      "frozen_sha256": "902d5465e48c8bae36ff1f8241138447278220cc064623e58a1db910e367d8ae",
+      "current_source_lf_sha256": "902d5465e48c8bae36ff1f8241138447278220cc064623e58a1db910e367d8ae",
+      "frozen_source_lf_sha256": "902d5465e48c8bae36ff1f8241138447278220cc064623e58a1db910e367d8ae"
+    },
+    "roadseg/metrics.py": {
+      "current_sha256": "97a32185e410a4e1c577860965b4bccb1c4242e26284d9c73d548e32da985471",
+      "frozen_sha256": "97a32185e410a4e1c577860965b4bccb1c4242e26284d9c73d548e32da985471",
+      "current_source_lf_sha256": "97a32185e410a4e1c577860965b4bccb1c4242e26284d9c73d548e32da985471",
+      "frozen_source_lf_sha256": "97a32185e410a4e1c577860965b4bccb1c4242e26284d9c73d548e32da985471"
+    },
+    "roadseg/train_dinov3.py": {
+      "current_sha256": "45bb57ce88ad5c478395ab3725aa489bdf3380683fa32f5a5600deef213bc984",
+      "frozen_sha256": "45bb57ce88ad5c478395ab3725aa489bdf3380683fa32f5a5600deef213bc984",
+      "current_source_lf_sha256": "45bb57ce88ad5c478395ab3725aa489bdf3380683fa32f5a5600deef213bc984",
+      "frozen_source_lf_sha256": "45bb57ce88ad5c478395ab3725aa489bdf3380683fa32f5a5600deef213bc984"
+    },
+    "roadseg/tune_dinov3.py": {
+      "current_sha256": "1ba41a9652f8a19765075507e427923a28a49b0d9406d2ee67db842cf85ec2c4",
+      "frozen_sha256": "1ba41a9652f8a19765075507e427923a28a49b0d9406d2ee67db842cf85ec2c4",
+      "current_source_lf_sha256": "1ba41a9652f8a19765075507e427923a28a49b0d9406d2ee67db842cf85ec2c4",
+      "frozen_source_lf_sha256": "1ba41a9652f8a19765075507e427923a28a49b0d9406d2ee67db842cf85ec2c4"
+    },
+    "roadseg/evaluate_dinov3.py": {
+      "current_sha256": "3da2aeacfb52e58f1bd4b26a50bd85d6b1587aaaebfbe21aee13689093045d8e",
+      "frozen_sha256": "3da2aeacfb52e58f1bd4b26a50bd85d6b1587aaaebfbe21aee13689093045d8e",
+      "current_source_lf_sha256": "3da2aeacfb52e58f1bd4b26a50bd85d6b1587aaaebfbe21aee13689093045d8e",
+      "frozen_source_lf_sha256": "3da2aeacfb52e58f1bd4b26a50bd85d6b1587aaaebfbe21aee13689093045d8e"
+    }
+  },
+  "reference_results_absent": true,
+  "reference_tuning_absent": true,
+  "core_experiment_source_text_identical": true,
+  "line_ending_only_differences": [
+    "src/mit_backbone.py"
+  ],
+  "interpretation": "Git checkout and seven core module source texts verified. The original local backbone uses CRLF and the public clone uses LF; raw byte hashes differ for that file. Clean reruns generate their own source-identity records; cross-platform reference predictions are not silently resumed.",
+  "frozen_tuning_cli_help_exit_code": 0
+}

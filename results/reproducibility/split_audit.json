@@ -1,0 +1,38 @@
+{
+  "scope": "Official train/validation label metadata, not perceptual duplicate detection",
+  "counts": {
+    "train": 1600,
+    "val": 406
+  },
+  "frame_ids_disjoint": true,
+  "identical_frame_id_overlap": [],
+  "image_id_list_sha256": {
+    "train": "ae24c8e71117265b2bf208e1fa918888a20efd554a877f57b10faaae42d4f2fd",
+    "val": "7b61f097e0ace85f3b11ce6ec63b038856c4bf62269f240739f068c70851afb0"
+  },
+  "shared_recording_name_families": {
+    "fog": [
+      "recording_0475",
+      "recording_0476"
+    ],
+    "night": [
+      "recording_0351"
+    ],
+    "rain": [
+      "recording_0400",
+      "recording_0402",
+      "recording_0571"
+    ],
+    "snow": [
+      "recording_0122",
+      "recording_0176",
+      "recording_0604",
+      "recording_0606",
+      "recording_0607"
+    ]
+  },
+  "interpretation": "Recording-name grouping is a conservative filename heuristic. Shared families do not prove duplicate frames, geographic overlap or temporal adjacency. Official splits are preserved. Internal tuning groups remain disjoint; official train/validation recording independence is not established.",
+  "near_or_perceptual_duplicates_checked": false,
+  "aligned_original_rgb_gt_headers_checked": 2006,
+  "header_check_limit": "Headers establish dimensions and modes, not perceptual duplicate absence or every pixel value"
+}

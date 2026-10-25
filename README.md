@@ -19,7 +19,7 @@ The DINOv3 model adds a recent transformer family and fresh training to the appl
 
 Python 3.12 is tested. A CUDA GPU is recommended. The sequential inference port was designed to fit a 4 GB GTX 1650 Ti.
 
-`main` contains the project's measured reference evidence, including nonempty result/training folders, while large prediction masks remain excluded. For a **clean rerun**, create a separate checkout pinned to the frozen source-only experiment commit. This preserves the published evidence and avoids mixing prior manifests, training outputs or platform-specific inference identities into a new run:
+The final `main` submission will include measured reference evidence and nonempty result/training folders; large prediction masks remain excluded. For a **clean rerun**, create a separate checkout pinned to the frozen source-only experiment commit. This preserves reference evidence and avoids mixing prior manifests, training outputs or platform-specific inference identities into a new run:
 
 ```powershell
 git clone --no-checkout https://github.com/AymanLakhnati/Adverse-Condition-VRU-Segmentation.git VRU-Segmentation-clean

@@ -1,0 +1,21 @@
+{
+  "scope": "Implementation validation, not a dataset experiment",
+  "checkpoint_loads": {
+    "MIC": "all1126student tensors strictload passed",
+    "HRDA": "all1126student tensors strictload passed"
+  },
+  "parameters": 85685990,
+  "backbone_reference_cpu_max_absolute_error": 0.0,
+  "sequential_vs_batched_synthetic_max_absolute_error": 7.078051567077637e-08,
+  "synthetic_gpu_1024_shape": [
+    1,
+    19,
+    1024,
+    1024
+  ],
+  "synthetic_gpu_1024_finite": true,
+  "synthetic_gpu_1024_seconds": 2.4980997000820935,
+  "synthetic_gpu_1024_peak_allocated_MiB": 666.85791015625,
+  "tests": "2 passed in5.02s",
+  "note": "GPU timing includes one 1024 outercrop with9sequential512detail crops. Dataset runtime differs. Port uses float32 and original1024outer+512detail crop sizes."
+}

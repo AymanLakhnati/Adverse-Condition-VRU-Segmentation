@@ -1,0 +1,12 @@
+{
+  "source": "https://acdc.vision.ee.ethz.ch/download",
+  "package_id": "6436f2259880d97633275dfc",
+  "package_name": "rgb_anon_trainvaltest.zip",
+  "retained_images": 2006,
+  "include_training_images": true,
+  "bytes_streamed": 16741158877,
+  "retained_crc32_verified": true,
+  "full_archive_md5_verified": false,
+  "elapsed_seconds": 4744.125,
+  "terms": "Official ACDC research license applies; raw data excluded from repository"
+}
