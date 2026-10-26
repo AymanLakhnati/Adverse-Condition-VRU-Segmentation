@@ -11,6 +11,7 @@ import hashlib
 import json
 from pathlib import Path
 from zipfile import ZIP_DEFLATED, ZipFile
+from urllib.parse import urlparse
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -20,7 +21,8 @@ def main():
     parser.add_argument("--presentation", type=Path, required=True)
     parser.add_argument("--canva-url", required=True)
     args = parser.parse_args()
-    if not args.canva_url.startswith("https://www.canva.com/design/"):
+    canva = urlparse(args.canva_url)
+    if canva.scheme != "https" or canva.netloc != "www.canva.com" or not canva.path.startswith(("/design/", "/d/")):
         raise ValueError("Supply the verified final Canva design link")
     report = ROOT / "outputs/report/MAAI901_Technical_Report_Ayman_Lakhnati.pdf"
     presentation = args.presentation.resolve()
@@ -55,6 +57,7 @@ def main():
                 files.add(candidate)
     files.add(ROOT / "outputs/dinov3_dense/head.pt")
     files.add(report)
+    files.add(ROOT / "outputs/report/report.md")
     files.add(presentation)
     for name in ["speaker_notes.md"]:
         source = ROOT / "build/presentation" / name

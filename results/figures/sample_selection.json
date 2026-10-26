@@ -1,0 +1,46 @@
+[
+  {
+    "image_id": "GOPR0476_frame_000850",
+    "condition": "fog",
+    "gt_vru_pixels": 17485,
+    "crop_y1_y2_x1_x2": [
+      628,
+      1014,
+      1110,
+      1345
+    ]
+  },
+  {
+    "image_id": "GOPR0351_frame_000141",
+    "condition": "night",
+    "gt_vru_pixels": 153519,
+    "crop_y1_y2_x1_x2": [
+      485,
+      1059,
+      0,
+      1920
+    ]
+  },
+  {
+    "image_id": "GOPR0571_frame_000275",
+    "condition": "rain",
+    "gt_vru_pixels": 106746,
+    "crop_y1_y2_x1_x2": [
+      542,
+      1047,
+      0,
+      1406
+    ]
+  },
+  {
+    "image_id": "GP030176_frame_000736",
+    "condition": "snow",
+    "gt_vru_pixels": 136477,
+    "crop_y1_y2_x1_x2": [
+      560,
+      1080,
+      0,
+      1432
+    ]
+  }
+]

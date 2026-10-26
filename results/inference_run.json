@@ -1,0 +1,33 @@
+{
+  "checkpoints": {
+    "hrda": {
+      "path": "checkpoints\\hrda\\csHR2acdcHR_hrda_d3a68\\iter_40000_relevant.pth",
+      "sha256": "85e809060244684e7d85f9aa0aa4b0bdacff2f7b7fce92e90e2917ff5c47923d"
+    },
+    "mic": {
+      "path": "checkpoints\\mic\\csHR2acdcHR_mic_hrda_b52f1\\iter_40000_relevant.pth",
+      "sha256": "02a9eba7209f1911fd17c61200de5bf60e2ce389b0bc79d1b1319ba61a9b8b61"
+    }
+  },
+  "models": [
+    "hrda",
+    "mic"
+  ],
+  "precision": "float32",
+  "seed": 42,
+  "full_validation_expected": 406,
+  "inference": "official 1024/512 outer and 512/256 inner sliding grids",
+  "input": "1920x1080 RGB; official mean/std; no flip or multiscale test augmentation",
+  "torch": "2.5.1+cu118",
+  "cuda": "11.8",
+  "gpu": "NVIDIA GeForce GTX 1650 Ti",
+  "code_sha256": {
+    "src\\hrda_inference.py": "914990198db83e1c69ce082cb13dfaf7db98bcb23d6e33becd778e921b34f963",
+    "src\\mit_backbone.py": "8ee4b54f1316c4382a9be53774fb34ad2f83587f199636af1507a8e6e3e9edb1"
+  },
+  "started_utc": "2026-10-25T09:43:31Z",
+  "status": "completed",
+  "processed": 406,
+  "elapsed_seconds": 46761.187000000034,
+  "finished_utc": "2026-10-25T22:42:52Z"
+}

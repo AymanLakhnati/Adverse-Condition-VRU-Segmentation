@@ -1,0 +1,9 @@
+{
+  "head_sha256": "f3d32ea1addd1cd2a52795fca1e9cdfce71714042a4ca6bc93a066e57e119f37",
+  "encoder_state_sha256": "48804fa3ed123be126e120ff9edd6a7cf7903a18211c108d45d1b397741bd9a4",
+  "tile_size": 512,
+  "stride": 384,
+  "precision": "float32",
+  "torch": "2.5.1+cu118",
+  "inference_source_sha256": "45bb57ce88ad5c478395ab3725aa489bdf3380683fa32f5a5600deef213bc984"
+}

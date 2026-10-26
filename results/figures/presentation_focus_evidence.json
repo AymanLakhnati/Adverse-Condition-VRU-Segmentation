@@ -1,0 +1,23 @@
+{
+  "focus": {
+    "image_id": "GOPR0476_frame_000850",
+    "condition": "fog",
+    "gt_vru_pixels": 17485,
+    "crop_y1_y2_x1_x2": [
+      628,
+      1014,
+      1110,
+      1345
+    ]
+  },
+  "displayed": "Saved predictions only; no RGB or GT image pixels",
+  "snow_rider": {
+    "gt_pixels": 1867,
+    "images": 2,
+    "image_ids": [
+      "GOPR0604_frame_000439",
+      "GOPR0606_frame_000213"
+    ]
+  },
+  "selection_rule": "Reuse previously recorded largest-GT-VRU-support fog image and crop"
+}

@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Road segmentation evaluation summary",
+  "type": "object",
+  "required": [
+    "models",
+    "hypothesis",
+    "dataset",
+    "score_unit",
+    "delta_unit"
+  ],
+  "properties": {
+    "score_unit": {
+      "const": "fraction"
+    },
+    "delta_unit": {
+      "const": "percentage_points"
+    },
+    "models": {
+      "type": "object",
+      "required": [
+        "hrda",
+        "mic"
+      ]
+    },
+    "hypothesis": {
+      "type": "object",
+      "required": [
+        "status",
+        "supported",
+        "delta_W_pp",
+        "condition_delta_pp"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "supported",
+            "not_supported",
+            "unresolved"
+          ]
+        },
+        "supported": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        }
+      }
+    }
+  },
+  "$comment": "All undefined metric denominators serialize as null. NPZ confusion axes are image, model(hrda,mic), GT trainID, predicted trainID; shape (N,2,19,19), int64. Per-class CSV includes support, TP, FP, FN, union, precision, recall, F1, IoU. Group scores are computed from pooled pixel counts."
+}

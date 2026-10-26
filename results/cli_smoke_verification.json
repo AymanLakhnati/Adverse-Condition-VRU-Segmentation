@@ -1,0 +1,24 @@
+{
+  "checks": [
+    {
+      "model": "dinov3",
+      "reference": "results/dinov3/predictions/fog/GOPR0476_frame_000850_dinov3.png",
+      "cli_output": "results/sample_output/GOPR0476_frame_000850_rgb_anon_dinov3.png",
+      "pixel_identical": true,
+      "shape": [
+        1080,
+        1920
+      ]
+    },
+    {
+      "model": "hrda",
+      "reference": "results/predictions/hrda/fog/GOPR0476_frame_000850_hrda.png",
+      "cli_output": "results/sample_output/GOPR0476_frame_000850_rgb_anon_hrda.png",
+      "pixel_identical": true,
+      "shape": [
+        1080,
+        1920
+      ]
+    }
+  ]
+}

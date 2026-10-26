@@ -15,11 +15,31 @@ The implemented study has two clearly separated parts:
 
 The DINOv3 model adds a recent transformer family and fresh training to the applied assignment. Its training labels, pretraining, and decoder differ from HRDA/MIC; the models do not form a controlled architecture ablation. The released HRDA and MIC checkpoints also use different training seeds, so their comparison is descriptive rather than a matched causal estimate of MIC's contribution.
 
+## Completed validation results
+
+All models were evaluated on the complete original **406-image ACDC validation split**. These are local measurements, not private test-server scores. Scores are percentages; W is the lowest condition-specific person/rider/bicycle mean IoU.
+
+| Model and learning setting | Fog VRU IoU | Night VRU IoU | Rain VRU IoU | Snow VRU IoU | W | Pooled 19-class mIoU |
+|---|---:|---:|---:|---:|---:|---:|
+| HRDA, released UDA checkpoint | 69.73 | 34.45 | 66.29 | 48.02 | 34.45 | 65.24 |
+| MIC(HRDA), released UDA checkpoint | 70.25 | 38.58 | 65.88 | 50.60 | 38.58 | 69.60 |
+| DINOv3, new supervised ACDC head | 48.25 | 37.33 | 67.61 | 44.32 | 37.33 | 62.75 |
+
+The HRDA/MIC point estimates meet the proposed thresholds: **W improves by 4.13 percentage points**, and rain's 0.41-point decrease stays within the 1-point margin. The paired-image bootstrap 95% interval for the W difference is **0.17 to 8.56 points**; rain's interval is **-2.71 to 1.17 points**. These intervals do not establish the full joint threshold statistically. Thirteen of 2,000 draws were undefined for snow/W because of sparse rider support.
+
+Snow rider illustrates the limits of averages: only **1,867 labeled pixels across two images**, with IoU 3.04% for HRDA, 2.96% for MIC and 0% for DINOv3. The released checkpoints also use different seeds. The DINOv3 extension has different supervision/pretraining and is not a controlled comparison of architectures or evidence of MIC's causal effect.
+
+Train-only learning-rate trials selected **0.003** using 1,198 fitting and 402 development images in disjoint recording families. A fresh head then completed **five epochs, all 1,600 training images and 2,000 optimizer steps**, with the encoder hash unchanged. Official validation did not select the rate. See [measured results and independent audit](docs/RESULTS.md), [trial evidence](outputs/dinov3_tuning/tuning_trials.csv), and the saved training configuration and logs.
+
+![Condition-specific performance and bootstrap intervals](results/figures/condition_vru.png)
+
+![Own predicted labels for selected examples](results/figures/sample_predictions.png)
+
 ## Reproduce
 
 Python 3.12 is tested. A CUDA GPU is recommended. The sequential inference port was designed to fit a 4 GB GTX 1650 Ti.
 
-The final `main` submission will include measured reference evidence and nonempty result/training folders; large prediction masks remain excluded. For a **clean rerun**, create a separate checkout pinned to the frozen source-only experiment commit. This preserves reference evidence and avoids mixing prior manifests, training outputs or platform-specific inference identities into a new run:
+`main` includes measured reference evidence and nonempty result/training folders; large prediction masks remain excluded. For a **clean rerun**, create a separate checkout pinned to the frozen source-only experiment commit. This preserves reference evidence and avoids mixing prior manifests, training outputs or platform-specific inference identities into a new run:
 
 ```powershell
 git clone --no-checkout https://github.com/AymanLakhnati/Adverse-Condition-VRU-Segmentation.git VRU-Segmentation-clean
