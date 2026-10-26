@@ -79,3 +79,7 @@ An independent `python -m pytest -q` run on 26 October 2026 completed with **24 
 ## Software integrity revision
 
 After the completed experiment, source/cache and manifest hash checks were strengthened without changing measured artifacts. The expanded local suite passed **30 tests in 10.23 seconds** on 26 October 2026; JUnit evidence is `results/reproducibility/revision_tests.xml`. The original 24-test record remains available. See [revision notes](REVISION_NOTES.md) and the separately labeled [recording-family influence analysis](RECORDING_SENSITIVITY.md).
+
+## Final software verification
+
+The final expanded local suite passed **54 tests in 30.08 seconds**. The independent CPU verifier confirms all saved primary and DINOv3 per-class/condition/pooled metrics, coverage and tuning/refit provenance; its receipt is `results/reproducibility/final_evidence_verification.json`. A real folder-prediction smoke check on one fog and one night image matched the original DINOv3 evaluation masks pixel for pixel. These checks validate software and evidence consistency; they do not add an accuracy experiment or recompute bootstrap intervals.

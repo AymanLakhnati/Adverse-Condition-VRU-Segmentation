@@ -36,4 +36,4 @@ MiT/SegFormer source has NVIDIA research/evaluation restrictions; HRDA/MIC adapt
 
 ## Completion status
 
-The prespecified DINOv3 plan uses five epochs and 1,600 training images. A plan or synthetic smoke test is not completed dataset training. Final status, actual epochs/images, hashes, losses and unchanged-encoder verification must come from local `training_config.json`, `training_steps.csv` and checkpoint artifacts. If interrupted or limited, label it explicitly.
+The DINOv3 head completed five epochs on all 1,600 training images and 2,000 optimizer steps. The measured configuration, losses and unchanged-encoder hashes are preserved in `outputs/dinov3_dense/training_config.json` and `training_steps.csv`. Separate 406-image validation results are in `results/dinov3/summary.json`. The fresh supervised head does not replace the released-checkpoint UDA comparison or remove the limits described above.

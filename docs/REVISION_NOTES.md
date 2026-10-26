@@ -19,3 +19,7 @@ An exploratory recording-family omission analysis uses saved confusion counts, w
 ## Authorship and disclosure
 
 AI assistance is disclosed in the repository and report. No external similarity or AI-detector score is claimed. The report's evidence, references and limitations should be understood and explained by the submitting student in accordance with course rules.
+
+## Final features and presentation
+
+The final code adds directory prediction with one model load, stable discovery, protected output bundles and hashed metadata. A CPU-only verifier independently checks saved metrics and tuning/refit consistency. The expanded local suite passes 54 tests. Two actual DINOv3 batch outputs match their original evaluation masks pixel for pixel. The final deck uses explicitly labeled conceptual illustrations; illustration prompts and provenance accompany the assets. The report uses double-spaced black-and-white research-paper formatting.

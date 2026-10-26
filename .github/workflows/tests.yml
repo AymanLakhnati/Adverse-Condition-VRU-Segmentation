@@ -22,3 +22,5 @@ jobs:
         run: python -m pip install -r requirements.txt
       - name: Verify metrics, leakage boundaries and inference geometry
         run: python -m pytest -q
+      - name: Independently verify saved experiment evidence without GPU or data
+        run: python scripts/verify_results.py

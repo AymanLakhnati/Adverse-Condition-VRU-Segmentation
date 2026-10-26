@@ -9,6 +9,10 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
+import subprocess
+import sys
+import tempfile
 from pathlib import Path
 from zipfile import ZIP_DEFLATED, ZipFile
 from urllib.parse import urlparse
@@ -36,6 +40,20 @@ def main():
         raise ValueError("Both complete validation evaluations are required")
     if train["status"] != "completed" or not train["completed_fixed_full_protocol"]:
         raise ValueError("Completed full training protocol required")
+    # Recompute evidence before packaging. A stale hand-edited summary must not
+    # become a submission merely because the completion flags still exist.
+    verification = subprocess.run(
+        [sys.executable, str(ROOT / "scripts/verify_results.py"), "--root", str(ROOT)],
+        capture_output=True, text=True,
+    )
+    if verification.returncode:
+        raise ValueError("Evidence verification failed: " + (verification.stderr or verification.stdout).strip())
+    report_receipt = json.loads((ROOT / "outputs/report/build_receipt.json").read_text())
+    word_count = report_receipt["word_count_including_captions_references_tables"]
+    if not isinstance(word_count, int) or not 0 < word_count <= 2500:
+        raise ValueError("The report must have a verified word count at or below 2,500")
+    if report_receipt.get("pdf_sha256") != hashlib.sha256(report.read_bytes()).hexdigest():
+        raise ValueError("Report bytes differ from the report build receipt")
 
     files = set()
     for name in ["README.md", "requirements.txt", "pytest.ini", ".gitignore"]:
@@ -58,7 +76,9 @@ def main():
     files.add(ROOT / "outputs/dinov3_dense/head.pt")
     files.add(report)
     files.add(ROOT / "outputs/report/report.md")
+    files.update(p for p in (ROOT / "build/report/monochrome").glob("*") if p.is_file() and p.suffix in {".png", ".pdf", ".json"})
     files.add(presentation)
+    files.update(p for p in (ROOT / "assets/presentation").rglob("*") if p.is_file() and p.suffix in {".png", ".md", ".json"})
     for name in ["speaker_notes.md"]:
         source = ROOT / "build/presentation" / name
         if source.is_file():
@@ -69,7 +89,9 @@ def main():
     records = []
     output = ROOT / "submission/MAAI901_Ayman_Lakhnati_VRU_Segmentation.zip"
     output.parent.mkdir(exist_ok=True)
-    with ZipFile(output, "w", ZIP_DEFLATED, compresslevel=6) as archive:
+    with tempfile.NamedTemporaryFile(dir=output.parent, suffix=".zip", delete=False) as staged:
+        staged_path = Path(staged.name)
+    with ZipFile(staged_path, "w", ZIP_DEFLATED, compresslevel=6) as archive:
         for source in sorted(files):
             source = source.resolve()
             relative = source.relative_to(ROOT).as_posix()
@@ -88,14 +110,22 @@ def main():
             "Measured results: results/summary.json and results/dinov3/summary.json\n"
             "Visualizations and abstract sample predictions: results/figures/\n"
             "Presentation preparation: docs/PRESENTATION_DEFENSE.md\n\n"
+            "Grading evidence map: docs/GRADING_EVIDENCE.md\n"
+            "Verify saved results without data/GPU: python scripts/verify_results.py\n"
+            "Folder prediction and output safeguards: docs/SOFTWARE_GUIDE.md\n\n"
             "ACDC RGB images, ground-truth masks and reconstructive overlays are excluded under its license.\n"
             "Download data and upstream model weights from official sources using the documented commands.\n"
         )
         archive.writestr("START_HERE.txt", handoff)
         archive.writestr("SUBMISSION_MANIFEST.json", json.dumps({"files": records, "canva_url": args.canva_url}, indent=2))
-    with ZipFile(output) as archive:
+    with ZipFile(staged_path) as archive:
         if archive.testzip() is not None:
             raise RuntimeError("Archive integrity check failed")
+        for record in records:
+            payload = archive.read(record["path"])
+            if len(payload) != record["bytes"] or hashlib.sha256(payload).hexdigest() != record["sha256"]:
+                raise RuntimeError(f"Archive member verification failed: {record['path']}")
+    os.replace(staged_path, output)
     print(json.dumps({"archive": str(output), "files": len(records), "bytes": output.stat().st_size}, indent=2))
 
 

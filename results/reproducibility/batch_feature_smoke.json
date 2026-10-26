@@ -1,0 +1,22 @@
+{
+  "status": "passed",
+  "model": "dinov3",
+  "device": "cuda",
+  "images": 2,
+  "model_shared_within_batch": true,
+  "checks": [
+    {
+      "image_id": "GOPR0351_frame_000141",
+      "condition": "night",
+      "matches_original_evaluation_pixels": true,
+      "labels_sha256": "f546adf9692795561ae8303701eff24571bab53c5e6d87506ab4733b2d0bd7c9"
+    },
+    {
+      "image_id": "GOPR0476_frame_000850",
+      "condition": "fog",
+      "matches_original_evaluation_pixels": true,
+      "labels_sha256": "674af4eea82aef26718afc8e7a30c3476e971f3c124927ea01a2436c27876868"
+    }
+  ],
+  "interpretation": "Software equivalence check on two previously evaluated images; no new accuracy experiment"
+}

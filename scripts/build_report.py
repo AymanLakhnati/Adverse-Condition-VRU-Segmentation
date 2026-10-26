@@ -140,7 +140,7 @@ def load_verified(root):
 
 
 def content(primary, run, dino, train, steps, epoch_loss, tuning, student_id):
-    """Return eight explicit pages; Markdown and PDF share every text/table value."""
+    """Return ordered content sections; PDF flows as a double-spaced paper."""
     h, m, hyp = primary["models"]["hrda"], primary["models"]["mic"], primary["hypothesis"]
     endpoint = primary["bootstrap"]["endpoints"]["delta_W_pp"]
     ci = endpoint["percentile_95_pp"]
@@ -167,7 +167,7 @@ def content(primary, run, dino, train, steps, epoch_loss, tuning, student_id):
         '[1] E. Xie et al., "SegFormer: Simple and efficient design for semantic segmentation with transformers," NeurIPS, vol. 34, pp. 12077-12090, 2021.',
         '[2] C. Sakaridis, D. Dai, and L. Van Gool, "ACDC: The adverse conditions dataset with correspondences for semantic driving scene understanding," ICCV, pp. 10765-10775, 2021.',
         '[3] L. Hoyer, D. Dai, and L. Van Gool, "DAFormer: Improving network architectures and training strategies for domain-adaptive semantic segmentation," CVPR, pp. 9924-9935, 2022.',
-        '[4] L. Hoyer, D. Dai, and L. Van Gool, "HRDA: Context-aware high-resolution domain-adaptive semantic segmentation," ECCV, 2022.',
+        '[4] L. Hoyer, D. Dai, and L. Van Gool, "HRDA: Context-aware high-resolution domain-adaptive semantic segmentation," ECCV, LNCS vol. 13690, pp. 372-391, 2022.',
         '[5] L. Hoyer, D. Dai, H. Wang, and L. Van Gool, "MIC: Masked image consistency for context-enhanced domain adaptation," CVPR, pp. 11721-11732, 2023.',
         '[6] O. Simeoni et al., "DINOv3," arXiv:2508.10104, 2025.',
         '[7] ETH Zurich, "ACDC dataset overview," https://acdc.vision.ee.ethz.ch/overview, accessed 25 Oct. 2026.',
@@ -187,7 +187,7 @@ def content(primary, run, dino, train, steps, epoch_loss, tuning, student_id):
       ],
       [
         ("heading", "2. Dataset choice and preprocessing"),
-        ("p", "ACDC is appropriate because it contains real Swiss driving scenes, four adverse domains and 19 Cityscapes-compatible classes [2], [7]. We use the original adverse splits: 1,600 training images, 406 validation images and 2,000 test images. Training contributes 400 images per condition; validation contains 100 fog, 106 night, 100 rain and 100 snow images. Official test labels are withheld and were not accessed. Corresponding normal-condition images and uncertainty masks exist, but are not additional supervision in our local experiments."),
+        ("p", "ACDC is appropriate because it contains real Swiss driving scenes, four adverse domains and 19 Cityscapes-compatible classes [2], [7]. The original benchmark defines 1,600 training, 406 validation and 2,000 test images; our local experiments use training and validation only. Training contributes 400 images per condition; validation contains 100 fog, 106 night, 100 rain and 100 snow images. Official test labels are withheld and were not accessed. Corresponding normal-condition images and uncertainty masks exist, but are not additional supervision in our local experiments."),
         ("p", "The downloader obtains official archives; manifests preserve image IDs, condition, split, RGB/label hashes and matched filenames. Integer labelTrainIds use 0-18, with person 11, rider 12 and bicycle 18; GT 255 alone is ignored. We reject incompatible shapes, RGB label visualizations, reused paths and illegal predictions at valid GT pixels. A matching count alone cannot prove provenance, so paths and hashes accompany split checks."),
         ("table", (["System", "Label access / local work", "Spatial processing"], [
             ["HRDA", "Published source-supervised, target-unlabeled UDA; local inference", "1024 outer / 512 detail crops"],
@@ -197,7 +197,7 @@ def content(primary, run, dino, train, steps, epoch_loss, tuning, student_id):
         ("caption", "Table 1. Supervision and preprocessing differ between studies; this is not a controlled architecture ranking."),
         ("p", "For HRDA/MIC we preserve RGB normalization (means 123.675, 116.28, 103.53; standard deviations 58.395, 57.12, 57.375), the 1920-by-1080 input and published sliding-window scale fusion. No flip or multiscale test augmentation is added. Masks retain original resolution. DINOv3 uses the same channel normalization, synchronized image/mask crop coordinates and flips during training. RGB normalization never changes semantic IDs; evaluation preserves the original mask grid."),
         ("heading", "3. Released models and implementation"),
-        ("p", "HRDA is the closest reference because it shares MIC's encoder and scale-fusion framework. The authors trained MiT-B5/HRDA checkpoints for 40,000 iterations using AdamW, base LR 6e-5, decoder multiplier 10, weight decay 0.01, 1,500-step warmup and polynomial decay [4], [5]. MIC uses block-64 masking at ratio 0.7; its released separate mode masks one source and one target image. These are upstream runs, not locally repeated training. HRDA seed 2 versus MIC seed 0 prevents a matched-seed causal ablation; full settings accompany the code."),
+        ("p", "The released checkpoints adapt labeled Cityscapes to unlabeled ACDC training scenes. HRDA is the closest reference because it shares MIC's encoder and scale-fusion framework. The authors trained MiT-B5/HRDA checkpoints for 40,000 iterations using AdamW, base LR 6e-5, decoder multiplier 10, weight decay 0.01, 1,500-step warmup and polynomial decay [4], [5]. MIC uses block-64 masking at ratio 0.7; its released separate mode masks one source and one target image. These are upstream runs, not locally repeated training. HRDA seed 2 versus MIC seed 0 prevents a matched-seed causal ablation; full settings accompany the code."),
         ("p", "Each primary inference network has 85,685,990 parameters. We strictly load all 1,126 student tensors, excluding teacher training state. A standalone PyTorch port sequences detail crops to fit the local 4 GB GPU while retaining the official fusion mathematics. Reference tests found zero maximum backbone CPU difference and approximately 7.08e-8 synthetic sequential/batched logit difference. These establish targeted implementation agreement, not complete equivalence across modern kernels or every dataset image."),
       ],
       [
@@ -227,11 +227,16 @@ def content(primary, run, dino, train, steps, epoch_loss, tuning, student_id):
       ],
       [
         ("heading", "6. Performance disparities and error analysis"),
-        ("p", f"Across all validation pixels, 19-class mIoU was {pct(h['pooled']['miou_19'])} for HRDA and {pct(m['pooled']['miou_19'])} for MIC; these aggregate values cannot replace V(c). Rounded pooled scores match the released author logs, an aggregate sanity check rather than proof of pixelwise equivalence. The lowest class-condition IoU among primary VRU results was {worst_model} {worst['class_name']} in {LABELS[worst_condition]} ({pct(worst['iou'])}; its support was {worst['support']:,} pixels, with {worst['fn']:,} false-negative and {worst['fp']:,} false-positive pixels. These counts substantiate errors without inventing their visual cause."),
+        ("p", f"Across all validation pixels, 19-class mIoU was {pct(h['pooled']['miou_19'])} for HRDA and {pct(m['pooled']['miou_19'])} for MIC; these aggregate values cannot replace V(c). Rounded pooled scores match the released author logs, an aggregate sanity check rather than proof of pixelwise equivalence. The minimum among the {len(cells)} HRDA/MIC VRU class-condition cells was {worst_model} {worst['class_name']} in {LABELS[worst_condition]} ({pct(worst['iou'])}; its support was {worst['support']:,} pixels, with {worst['fn']:,} false-negative and {worst['fp']:,} false-positive pixels. These counts substantiate errors without inventing their visual cause."),
         ("figure", ("class_condition_heatmap.png", 310)),
         ("caption", "Figure 3. Class-by-condition IoUs expose variation hidden by the three-class mean. Class support is retained in CSV."),
         ("p", f"Nighttime gains span person ({pp(night_gain[11])}), rider ({pp(night_gain[12])}) and bicycle ({pp(night_gain[18])}). Nevertheless, rain bicycle IoU changes by {pp(rain_bicycle_delta)} while the condition average changes only {pp(hyp['condition_delta_pp']['rain'])}. Passing the condition-level rule therefore does not exclude a larger class-specific regression. Full-size companion confusion matrices retain all 19 prediction columns."),
         ("p", f"MIC's pooled person precision was {pct(m_person['precision'])} and recall {pct(m_person['recall'])}, illustrating the distinction between false alarms and missed pixels. The separate supervised DINOv3 head reached 19-class mIoU {pct(dino['pooled']['miou_19'])}, W {pct(dino['W'])}, and weakest condition {', '.join(LABELS[c] for c in dino['weakest_conditions'])}. All three systems use the same labeled validation scenes, but only DINOv3's new head accessed target training labels. Its snow rider class has {dino_snow_rider['tp']:,} true-positive pixels out of {dino_snow_rider['support']:,} reference pixels. Target-label access therefore does not remove rare-class failure. Unweighted loss and coarse patch features are plausible contributors, not demonstrated causes; a training-only class-weighting or decoder ablation could test them."),
+      ],
+      [
+        ("heading", "Qualitative prediction examples"),
+        ("figure", ("sample_predictions_report.png", 560)),
+        ("caption", "Figure 4. HRDA/MIC predictions for the image with greatest GT VRU pixel support in each condition; ties choose the lowest image ID. Each crop spans all GT person/rider/bicycle pixels with a 64-pixel margin, clipped to image bounds. Only our predicted masks appear, without RGB or GT pixels. This deliberate sample does not estimate representative error rates. The companion pack includes the separate supervised DINOv3 predictions."),
       ],
       [
         ("heading", "7. Ethical and societal implications"),
@@ -242,14 +247,9 @@ def content(primary, run, dino, train, steps, epoch_loss, tuning, student_id):
         ("p", "We use anonymized data without identifying or tracking individuals. Anonymization does not make reidentification appropriate or eliminate every contextual clue. ACDC's noncommercial agreement prohibits redistributing its images or modified versions [8]; raw RGB, GT and image overlays stay local. Public deliverables contain code, abstract predictions and aggregate evidence, with attribution and model-specific licenses [9], [10]. No commercial driving authorization follows. Reusing checkpoints reduces local training work, but no unmeasured carbon saving is claimed."),
       ],
       [
-        ("heading", "Qualitative prediction examples"),
-        ("figure", ("sample_predictions_report.png", 560)),
-        ("caption", "Figure 4. HRDA/MIC predictions for the image with greatest GT VRU pixel support in each condition; ties choose the lowest image ID. Each crop spans all GT person/rider/bicycle pixels with a 64-pixel margin, clipped to image bounds. Only our predicted masks appear, without RGB or GT pixels. This deliberate sample does not estimate representative error rates. The companion pack includes the separate supervised DINOv3 predictions."),
-      ],
-      [
         ("heading", "8. Reproducibility, limits and conclusion"),
         ("p", "The repository provides official download instructions, source checkpoint hashes, exact configurations, matched manifests, strict-loading tests, per-image confusion matrices and reproducible evaluation commands. New head artifacts include sampled crop/flip logs, losses, nonzero gradients and frozen-state verification. Original NVIDIA/ETH source attribution is retained for adapted inference code. Large foundation weights and restricted raw data are excluded. The report source and PDF derive from completed JSON/CSV results through a gated builder."),
-        ("p", "Validation is not an untouched official test: the original authors used this split during model development/checkpoint evaluation. Comparing different released seeds does not isolate the masking loss. Recording-family separation applies only to internal tuning. Official train/validation share heuristic family names despite disjoint frame IDs, so recording independence is unverified. Names alone establish neither duplicated frames nor a contradiction of official geographic road-segment separation. Bootstrap intervals omit scene clustering, training variability and geographic shift. Target-supervised DINOv3 results must remain separate from the UDA hypothesis; no hyperparameters were chosen from this local validation outcome."),
+        ("p", "Validation is not an untouched official test: the original authors used this split during model development/checkpoint evaluation. Comparing different released seeds does not isolate the masking loss. Recording-family separation applies only to internal tuning. Official train/validation share heuristic family names despite disjoint frame IDs, so recording independence is unverified. Names alone establish neither duplicated frames nor a contradiction of official geographic road-segment separation. DINOv3 pretraining overlap with ACDC cannot independently be excluded. Bootstrap intervals omit scene clustering, training variability and geographic shift. Target-supervised DINOv3 results must remain separate from the UDA hypothesis; no hyperparameters were chosen from this local validation outcome."),
         ("p", f"On this bounded validation experiment, MIC changed the worst-condition VRU endpoint by {pptext} and the point-estimate threshold outcome was {verdict}. The freshly trained DINOv3 dense head provides an additional measured modern-transformer adaptation, not a replacement causal test. Future work should evaluate independent scenes and small-instance recall while preserving adverse-condition and class disaggregation."),
         ("heading", "References"),
         *[("reference", ref) for ref in refs],
@@ -257,6 +257,137 @@ def content(primary, run, dino, train, steps, epoch_loss, tuning, student_id):
       ],
     ]
     return pages
+
+
+
+def render_monochrome_assets(root, primary, dino):
+    """Replot measured data and prediction IDs, never RGB/GT imagery."""
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    from matplotlib.patches import Patch
+    import numpy as np
+    import pandas as pd
+    from PIL import Image as PILImage
+
+    destination = root / "build/report/monochrome"
+    destination.mkdir(parents=True, exist_ok=True)
+    plt.rcParams.update({"font.family": "serif", "font.serif": ["Times New Roman", "Times", "DejaVu Serif"],
+                         "font.size": 10.5, "text.color": "black", "axes.labelcolor": "black",
+                         "xtick.color": "black", "ytick.color": "black", "hatch.color": "black",
+                         "axes.spines.top": False, "axes.spines.right": False})
+    def save(fig, name):
+        path = destination / name
+        fig.savefig(path, dpi=300, bbox_inches="tight", facecolor="white")
+        fig.savefig(path.with_suffix(".pdf"), bbox_inches="tight", facecolor="white")
+        plt.close(fig)
+        with PILImage.open(path) as source:
+            gray = source.convert("L")
+        gray.save(path)
+
+    fig, axes = plt.subplots(2, 1, figsize=(6.2, 5.3), gridspec_kw={"height_ratios": [1.1, 1]})
+    x = np.arange(4)
+    for j, model in enumerate(("hrda", "mic")):
+        values = [primary["models"][model]["conditions"][c]["vru_mean_iou"] * 100 for c in CONDITIONS]
+        axes[0].bar(x + (j - .5) * .34, values, .34, facecolor="white" if j == 0 else ".45",
+                    edgecolor="black", linewidth=.7, hatch="///" if j == 0 else None,
+                    label="HRDA" if j == 0 else "MIC(HRDA)")
+    axes[0].set(xticks=x, xticklabels=[LABELS[c] for c in CONDITIONS], ylim=(0, 100),
+                ylabel="VRU mean IoU (%)", title="(a) Released UDA checkpoints")
+    axes[0].legend(frameon=False, ncol=2, fontsize=10)
+    for row, c in enumerate(CONDITIONS):
+        estimate = primary["hypothesis"]["condition_delta_pp"][c]
+        lo, hi = primary["bootstrap"]["endpoints"][c]["percentile_95_pp"]
+        axes[1].hlines(row, lo, hi, color="black", linewidth=1)
+        axes[1].vlines([lo, hi], row - .08, row + .08, color="black", linewidth=1)
+        axes[1].plot(estimate, row, "o", color="black", markersize=4)
+    axes[1].axvline(0, color=".6", linewidth=.7)
+    axes[1].axvline(-1, color="black", linestyle="--", linewidth=.8)
+    axes[1].set(yticks=x, yticklabels=[LABELS[c] for c in CONDITIONS], xlabel="MIC minus HRDA (percentage points)",
+                title="(b) Paired bootstrap 95% intervals; dashed line = -1 pp")
+    axes[1].invert_yaxis()
+    fig.tight_layout(h_pad=1.8)
+    save(fig, "condition_vru.png")
+
+    systems = [("HRDA", primary["models"]["hrda"]), ("MIC", primary["models"]["mic"]), ("DINOv3*", dino)]
+    names, values = [], []
+    for model, obj in systems:
+        for class_id in (11, 12, 18):
+            names.append(f"{model}: {obj['conditions']['fog']['per_class'][class_id]['class_name']}")
+            values.append([obj["conditions"][c]["per_class"][class_id]["iou"] * 100 for c in CONDITIONS])
+    array = np.asarray(values)
+    fig, ax = plt.subplots(figsize=(6.2, 4.6))
+    im = ax.imshow(array, cmap="Greys", vmin=0, vmax=100, aspect="auto")
+    for row in range(9):
+        for column in range(4):
+            ax.text(column, row, f"{array[row,column]:.1f}", ha="center", va="center",
+                    color="white" if array[row,column] > 55 else "black", fontsize=10)
+    ax.set(xticks=range(4), xticklabels=[LABELS[c] for c in CONDITIONS], yticks=range(9), yticklabels=names,
+           title="Class and condition IoU (%)")
+    fig.colorbar(im, ax=ax, label="IoU (%)", fraction=.045, pad=.04)
+    fig.text(.5, .01, "* DINOv3 uses target labels; learning settings differ", ha="center", fontsize=9.5)
+    fig.tight_layout(rect=[0,.045,1,1])
+    save(fig, "class_condition_heatmap.png")
+
+    steps = pd.read_csv(root / "outputs/dinov3_dense/training_steps.csv")
+    fig, ax = plt.subplots(figsize=(6.2, 2.6))
+    ax.plot(steps.global_step, steps.loss, color=".78", linewidth=.55, label="Batch loss")
+    ax.plot(steps.global_step, steps.loss.rolling(50, min_periods=1).mean(), color="black", linewidth=1.1,
+            label="50-step moving mean")
+    for epoch in range(2, 6):
+        ax.axvline(steps.loc[steps.epoch == epoch, "global_step"].min(), color=".65", linestyle="--", linewidth=.5)
+    ax.set(xlabel="Optimizer step", ylabel="Training cross entropy", title="New DINOv3 head: five fixed epochs")
+    ax.legend(frameon=False, fontsize=9.5)
+    fig.tight_layout()
+    save(fig, "dinov3_training_curve.png")
+
+    manifest = pd.read_csv(root / "results/manifest.csv").set_index("image_id")
+    selections = read_json(root / "results/figures/sample_selection.json")
+    require(len(selections) == 4 and {r["condition"] for r in selections} == set(CONDITIONS), "Original sample selection required")
+    fig, axes = plt.subplots(4, 2, figsize=(6.2, 7.1))
+    shade = np.linspace(.66, .88, 19)
+    shade[11], shade[12], shade[18] = .08, .48, 1.0
+    mask_inputs = []
+    for row_index, selection in enumerate(selections):
+        row = manifest.loc[selection["image_id"]]
+        y1, y2, x1, x2 = selection["crop_y1_y2_x1_x2"]
+        for column, field in enumerate(("hrda_pred_path", "mic_pred_path")):
+            path = Path(row[field])
+            if not path.is_absolute():
+                path = root / path
+            with PILImage.open(path) as source:
+                mask = np.asarray(source).copy()
+            require(mask.ndim == 2 and np.all((mask >= 0) & (mask < 19)), "Numeric prediction IDs required")
+            require(0 <= y1 < y2 <= mask.shape[0] and 0 <= x1 < x2 <= mask.shape[1], "Saved crop mismatch")
+            crop = mask[y1:y2, x1:x2]
+            ax = axes[row_index, column]
+            ax.imshow(shade[crop], cmap="gray", vmin=0, vmax=1, interpolation="nearest")
+            for label, hatch in ((12, "////"), (18, "xx")):
+                if np.any(crop == label):
+                    ax.contourf((crop == label).astype(float), levels=[.5,1.5], colors="none", hatches=[hatch])
+                    if np.any(crop != label):
+                        ax.contour((crop == label).astype(float), levels=[.5], colors="black", linewidths=.25)
+            ax.axis("off")
+            if row_index == 0:
+                ax.set_title(("HRDA", "MIC(HRDA)")[column], fontsize=11)
+            if column == 0:
+                ax.text(-.05,.5,LABELS[selection["condition"]],rotation=90,ha="right",va="center",transform=ax.transAxes,fontsize=10.5)
+            ax.text(.5,-.04,selection["image_id"],ha="center",va="top",transform=ax.transAxes,fontsize=8.7)
+            mask_inputs.append({"image_id": selection["image_id"], "model": field.removesuffix("_pred_path"),
+                                "prediction_sha256": hashlib.sha256(path.read_bytes()).hexdigest()})
+    handles=[Patch(facecolor=str(shade[11]),edgecolor="black",label="Person"),
+             Patch(facecolor=str(shade[12]),edgecolor="black",hatch="////",label="Rider"),
+             Patch(facecolor="white",edgecolor="black",hatch="xx",label="Bicycle")]
+    fig.legend(handles=handles,loc="lower center",ncol=3,frameon=False,fontsize=10)
+    fig.tight_layout(rect=[.035,.055,1,1],h_pad=1.4)
+    save(fig, "sample_predictions_report.png")
+    metadata = {"purpose":"Report-only monochrome scientific figures", "selection_unchanged": selections,
+                "prediction_inputs": mask_inputs, "raw_rgb_read": False, "ground_truth_masks_read": False,
+                "styles":{"person":"dark gray", "rider":"mid-gray with diagonal hatch", "bicycle":"white with crosshatch"},
+                "source_sha256":{str(path.relative_to(root)):hashlib.sha256(path.read_bytes()).hexdigest() for path in
+                    (root/"results/summary.json",root/"results/dinov3/summary.json",root/"outputs/dinov3_dense/training_steps.csv",root/"results/figures/sample_selection.json")}}
+    (destination/"provenance.json").write_text(json.dumps(metadata,indent=2),encoding="utf-8")
+    return destination
 
 
 def plain_text(pages):
@@ -275,7 +406,7 @@ def markdown(pages, root, output):
     lines = []
     for number, page in enumerate(pages, 1):
         if number > 1:
-            lines.extend(["", "<!-- PDF page break -->", ""])
+            lines.append("")
         for kind, value in page:
             if kind == "title":
                 lines.extend(["# " + value, ""])
@@ -289,8 +420,8 @@ def markdown(pages, root, output):
                 lines.append("")
             elif kind == "figure":
                 name, _ = value
-                absolute = (root / "results/figures" / name).resolve().as_posix()
-                lines.extend([f"![{name}]({absolute})", ""])
+                relative = "../../build/report/monochrome/" + name
+                lines.extend([f"![{name}]({relative})", ""])
             else:
                 lines.extend([value, ""])
     (output / "report.md").write_text("\n".join(lines), encoding="utf-8")
@@ -301,74 +432,80 @@ def build_pdf(pages, root, output):
     from reportlab.lib.enums import TA_CENTER
     from reportlab.lib.pagesizes import A4
     from reportlab.lib.styles import ParagraphStyle
-    from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image, PageBreak, KeepTogether
+    from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle, Image, KeepTogether, PageBreak
     from PIL import Image as PILImage
 
-    ink, teal, grey = colors.HexColor("#172B3A"), colors.HexColor("#116A73"), colors.HexColor("#53616B")
     styles = {
-        "p": ParagraphStyle("Body", fontName="Times-Roman", fontSize=11, leading=14.5,
-                            textColor=ink, spaceAfter=8),
-        "title": ParagraphStyle("Title", fontName="Times-Bold", fontSize=20, leading=23,
-                                textColor=ink, alignment=TA_CENTER, spaceAfter=12),
-        "meta": ParagraphStyle("Meta", fontName="Times-Roman", fontSize=11, leading=15,
-                               textColor=grey, alignment=TA_CENTER, spaceAfter=16),
-        "heading": ParagraphStyle("Heading", fontName="Times-Bold", fontSize=13, leading=16,
-                                  textColor=teal, spaceBefore=5, spaceAfter=9),
-        "caption": ParagraphStyle("Caption", fontName="Times-Italic", fontSize=9.4, leading=11.8,
-                                  textColor=grey, spaceBefore=4, spaceAfter=8),
-        "reference": ParagraphStyle("Reference", fontName="Times-Roman", fontSize=9.6, leading=12,
-                                    textColor=ink, spaceAfter=5),
-        "small": ParagraphStyle("Small", fontName="Times-Roman", fontSize=9.4, leading=12,
-                                textColor=grey, spaceBefore=7, spaceAfter=5),
-        "cell": ParagraphStyle("Cell", fontName="Times-Roman", fontSize=9.6, leading=12, textColor=ink),
+        "p": ParagraphStyle("Body", fontName="Times-Roman", fontSize=11, leading=22, textColor=colors.black, spaceAfter=6),
+        "title": ParagraphStyle("Title", fontName="Times-Bold", fontSize=18, leading=36, textColor=colors.black,
+                                alignment=TA_CENTER, spaceAfter=12, keepWithNext=True),
+        "meta": ParagraphStyle("Meta", fontName="Times-Roman", fontSize=11, leading=22, textColor=colors.black,
+                               alignment=TA_CENTER, spaceAfter=14, keepWithNext=True),
+        "heading": ParagraphStyle("Heading", fontName="Times-Bold", fontSize=13, leading=26, textColor=colors.black,
+                                  spaceBefore=12, spaceAfter=6, keepWithNext=True),
+        "caption": ParagraphStyle("Caption", fontName="Times-Italic", fontSize=10, leading=20, textColor=colors.black,
+                                  spaceBefore=6, spaceAfter=10),
+        "reference": ParagraphStyle("Reference", fontName="Times-Roman", fontSize=10, leading=20, textColor=colors.black, spaceAfter=6),
+        "small": ParagraphStyle("Small", fontName="Times-Roman", fontSize=10, leading=20, textColor=colors.black, spaceBefore=8),
+        "cell": ParagraphStyle("Cell", fontName="Times-Roman", fontSize=10, leading=20, textColor=colors.black),
+        "cell_head": ParagraphStyle("CellHead", fontName="Times-Bold", fontSize=10, leading=20, textColor=colors.black),
     }
-    width, height = A4
-    content_width = width - 92
-    output_pdf = output / "MAAI901_Technical_Report_Ayman_Lakhnati.pdf"
-    document = SimpleDocTemplate(str(output_pdf), pagesize=A4, rightMargin=46, leftMargin=46,
-                                topMargin=42, bottomMargin=45, title=TITLE,
-                                author="Ayman Lakhnati", subject="MAAI901 applied vision transformer report")
-    story = []
-    def paragraph(value, kind):
-        return Paragraph(html.escape(str(value)).replace("\n", "<br/>"), styles[kind])
-    for page_index, page in enumerate(pages):
-        if page_index:
-            story.append(PageBreak())
-        for kind, value in page:
-            if kind == "table":
-                head, rows = value
-                data = [[paragraph(x, "cell") for x in row] for row in [head, *rows]]
-                widths = [95, 226, content_width - 321] if len(head) == 3 else [content_width * .28] + [content_width * .24] * 3
-                table = Table(data, colWidths=widths, repeatRows=1, hAlign="LEFT")
-                table.setStyle(TableStyle([
-                    ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#E5EFF0")),
-                    ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, colors.HexColor("#F4F6F7")]),
-                    ("VALIGN", (0, 0), (-1, -1), "TOP"),
-                    ("LEFTPADDING", (0, 0), (-1, -1), 7), ("RIGHTPADDING", (0, 0), (-1, -1), 7),
-                    ("TOPPADDING", (0, 0), (-1, -1), 7), ("BOTTOMPADDING", (0, 0), (-1, -1), 7),
-                    ("LINEBELOW", (0, 0), (-1, 0), .6, teal),
-                    ("LINEBELOW", (0, -1), (-1, -1), .4, colors.HexColor("#CED9DD")),
-                ]))
-                story.append(table)
-            elif kind == "figure":
-                name, max_height = value
-                path = root / "results/figures" / name
-                with PILImage.open(path) as source:
-                    iw, ih = source.size
-                ratio = min(content_width / iw, max_height / ih)
-                story.append(Image(str(path), width=iw * ratio, height=ih * ratio, hAlign="CENTER"))
-            else:
-                story.append(paragraph(value, kind))
-    def page_footer(canvas, doc):
-        canvas.saveState()
-        canvas.setStrokeColor(colors.HexColor("#D6DEE1"))
-        canvas.line(46, 34, width - 46, 34)
-        canvas.setFont("Times-Roman", 8.6)
-        canvas.setFillColor(grey)
-        canvas.drawString(46, 22, "MAAI901 | Ayman Lakhnati | 26 October 2026")
-        canvas.drawRightString(width - 46, 22, str(doc.page))
-        canvas.restoreState()
-    document.build(story, onFirstPage=page_footer, onLaterPages=page_footer)
+    require(styles["p"].leading == 2*styles["p"].fontSize, "Body must be exactly double-spaced")
+    width,height=A4
+    margin=72
+    content_width=width-2*margin
+    output_pdf=output/"MAAI901_Technical_Report_Ayman_Lakhnati.pdf"
+    document=SimpleDocTemplate(str(output_pdf),pagesize=A4,leftMargin=margin,rightMargin=margin,
+        topMargin=60,bottomMargin=60,title=TITLE,author="Ayman Lakhnati",subject="Double-spaced monochrome MAAI901 research paper")
+    def paragraph(value,kind):
+        return Paragraph(html.escape(str(value)).replace("\n","<br/>"),styles[kind])
+    flattened=[item for page in pages for item in page]
+    story=[]
+    index=0
+    while index<len(flattened):
+        kind,value=flattened[index]
+        if kind=="table":
+            head,rows=value
+            data=[[paragraph(x,"cell_head" if r==0 else "cell") for x in row] for r,row in enumerate([head,*rows])]
+            widths=[content_width*.20,content_width*.47,content_width*.33] if len(head)==3 else [content_width*.28]+[content_width*.24]*3
+            table=Table(data,colWidths=widths,repeatRows=1,hAlign="LEFT")
+            table.setStyle(TableStyle([("VALIGN",(0,0),(-1,-1),"TOP"),("LEFTPADDING",(0,0),(-1,-1),5),
+                ("RIGHTPADDING",(0,0),(-1,-1),5),("TOPPADDING",(0,0),(-1,-1),5),("BOTTOMPADDING",(0,0),(-1,-1),5),
+                ("LINEABOVE",(0,0),(-1,0),.7,colors.black),("LINEBELOW",(0,0),(-1,0),.6,colors.black),
+                ("LINEBELOW",(0,-1),(-1,-1),.6,colors.black)]))
+            group=[table]
+            if index+1<len(flattened) and flattened[index+1][0]=="caption":
+                index+=1;group.append(paragraph(flattened[index][1],"caption"))
+            story.append(KeepTogether(group))
+        elif kind=="figure":
+            name,_=value
+            path=root/"build/report/monochrome"/name
+            with PILImage.open(path) as source:
+                iw,ih=source.size
+                require(source.mode=="L", "Report figures must be grayscale")
+            # Preserve full-width scientific labels. Keep the image with its caption.
+            maximum_height = 440 if name == "sample_predictions_report.png" else 505
+            ratio=min(content_width/iw,maximum_height/ih)
+            group=[Image(str(path),width=iw*ratio,height=ih*ratio,hAlign="CENTER")]
+            if index+1<len(flattened) and flattened[index+1][0]=="caption":
+                index+=1;group.append(paragraph(flattened[index][1],"caption"))
+            # A nested KeepTogether can otherwise leave a heading behind when
+            # a large figure moves to the next page. Bind it explicitly.
+            if story and isinstance(story[-1], Paragraph) and story[-1].style.name == "Heading":
+                group.insert(0, story.pop())
+            story.append(KeepTogether(group))
+        else:
+            if kind=="heading" and value=="References":
+                story.append(PageBreak())
+            story.append(paragraph(value,kind))
+        index+=1
+    def page_footer(canvas,doc):
+        canvas.saveState();canvas.setStrokeColor(colors.black);canvas.setFillColor(colors.black)
+        canvas.setLineWidth(.4);canvas.line(margin,40,width-margin,40)
+        canvas.setFont("Times-Roman",9)
+        canvas.drawString(margin,26,"MAAI901 | Ayman Lakhnati | 26 October 2026")
+        canvas.drawRightString(width-margin,26,str(doc.page));canvas.restoreState()
+    document.build(story,onFirstPage=page_footer,onLaterPages=page_footer)
     return output_pdf
 
 
@@ -377,9 +514,23 @@ def main():
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
     parser.add_argument("--student-id", required=True, help="Private local metadata; do not publish report artifacts")
     parser.add_argument("--replace", action="store_true", help="Replace a prior locally rendered report revision")
+    parser.add_argument("--assets-only", action="store_true", help="Regenerate report-only monochrome scientific assets")
     args = parser.parse_args()
     root = args.root.resolve()
     primary, run, dino, train, steps, epoch_loss, tuning = load_verified(root)
+    if args.assets_only:
+        print(render_monochrome_assets(root, primary, dino))
+        return
+    try:
+        render_monochrome_assets(root, primary, dino)
+    except ModuleNotFoundError as error:
+        if error.name not in ("matplotlib", "numpy", "pandas"):
+            raise
+        import subprocess
+        asset_python = root / ".venv/Scripts/python.exe"
+        require(asset_python.exists(), "Scientific figure dependencies required in the project environment")
+        subprocess.run([str(asset_python), str(Path(__file__).resolve()), "--root", str(root),
+                        "--student-id", args.student_id, "--assets-only"], check=True)
     pages = content(primary, run, dino, train, steps, epoch_loss, tuning, args.student_id)
     # Count body, abstract, metadata, tables, captions and references conservatively.
     text = plain_text(pages)
@@ -393,13 +544,17 @@ def main():
     pdf = build_pdf(pages, root, output)
     from pypdf import PdfReader
     count = len(PdfReader(str(pdf)).pages)
-    require(count == 8, f"Layout produced {count} pages; revise page geometry and visually inspect")
+    require(count > 0, "Final double-spaced report is empty")
     files = [root / "results/summary.json", root / "results/dinov3/summary.json",
              root / "results/inference_run.json", root / "outputs/dinov3_dense/training_config.json",
              root / "outputs/dinov3_dense/training_steps.csv",
              root / "outputs/dinov3_tuning/tuning_results.json", root / "outputs/dinov3_tuning/tuning_trials.csv"]
     receipt = {"word_count_including_captions_references_tables": words, "pages": count,
                "private_student_identifier_included": True, "pdf": str(pdf),
+               "pdf_sha256": hashlib.sha256(pdf.read_bytes()).hexdigest(),
+               "format": {"body_font": "Times-Roman", "body_font_pt": 11, "body_leading_pt": 22,
+                          "double_spaced": True, "monochrome": True, "caption_font_pt": 10, "caption_leading_pt": 20,
+                          "reference_font_pt": 10, "reference_leading_pt": 20},
                "inputs_sha256": {str(p.relative_to(root)): hashlib.sha256(p.read_bytes()).hexdigest() for p in files},
                "status": "rendered; visual review still required"}
     (output / "build_receipt.json").write_text(json.dumps(receipt, indent=2), encoding="utf-8")

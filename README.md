@@ -138,3 +138,9 @@ AI tools assisted implementation, literature checking, analysis and document pre
 ## Revised implementation and additional analysis
 
 See [revision notes](docs/REVISION_NOTES.md) for cached-input and prediction integrity checks and the distinction between the original frozen experiment source and the revised software. [Recording-family sensitivity](docs/RECORDING_SENSITIVITY.md) provides an explicitly exploratory analysis from the saved counts.
+
+## Demonstrate and audit the software
+
+The current implementation supports [folder prediction and evidence verification](docs/SOFTWARE_GUIDE.md). Run `python scripts/verify_results.py` to independently check saved metrics and the tuning/refit chain without a dataset download, checkpoint loading or GPU. Run `python -m roadseg.predict IMAGE_DIRECTORY --recursive --model dinov3 --output working/new_batch --device cuda` for a deterministic folder batch with one model load and protected outputs. Always select a fresh output directory.
+
+The expanded local suite passes 54 tests (`results/reproducibility/final_tests.xml`). The two-image real DINOv3 batch reproduces the original saved prediction pixels (`results/reproducibility/batch_feature_smoke.json`). See the [grading evidence map](docs/GRADING_EVIDENCE.md) for rubric coverage. Conceptual presentation artwork is labeled and documented under `assets/presentation/ARTWORK.md`; it is separate from experimental outputs.
