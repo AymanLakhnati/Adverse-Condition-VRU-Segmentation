@@ -18,7 +18,7 @@ Preparation for the 27 October 2026 presentation. Use these explanations in your
 | Fresh full-data fit | 1,600 training images, five epochs, batch four, 2,000 optimizer steps, 16.42 minutes |
 | New head | 7,315 trainable parameters; encoder hash unchanged |
 | Separate supervised DINOv3 validation | Pooled 19-class mIoU 62.75%; W 37.33%, weakest at night |
-| Local implementation tests | 24 passed; all saved primary and DINOv3 aggregate metrics independently recomputed |
+| Local implementation tests | 30 passed after integrity improvements; all saved primary and DINOv3 aggregate metrics independently recomputed |
 
 The hypothesis passes the stated thresholds at the observed point estimates. The confidence intervals do **not** establish the full joint improvement/no-harm thresholds, and no result proves driving safety. Snow and W intervals omit 13 undefined draws out of 2,000; this is disclosed in the summary. DINOv3 uses target training labels, so its scores belong to a separate learning setting.
 

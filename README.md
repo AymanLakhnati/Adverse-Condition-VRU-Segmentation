@@ -134,3 +134,7 @@ ACDC data are governed by the official noncommercial research license. This repo
 The backbone/decoder adaptations retain their upstream attribution and licenses in `licenses/`. DINOv3 uses Meta's custom DINOv3 terms. No blanket project license overrides third-party rights.
 
 AI tools assisted implementation, literature checking, analysis and document preparation. The student should verify the artifacts, understand the experimental distinctions, and follow the course's disclosure rules.
+
+## Revised implementation and additional analysis
+
+See [revision notes](docs/REVISION_NOTES.md) for cached-input and prediction integrity checks and the distinction between the original frozen experiment source and the revised software. [Recording-family sensitivity](docs/RECORDING_SENSITIVITY.md) provides an explicitly exploratory analysis from the saved counts.

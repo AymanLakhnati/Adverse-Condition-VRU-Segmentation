@@ -12,6 +12,7 @@ import torch
 from PIL import Image
 
 from src.hrda_inference import load_model, preprocess
+from roadseg.metrics import confusion_matrix
 
 LOG = logging.getLogger("roadseg-inference")
 
@@ -22,6 +23,38 @@ def sha(path):
         for block in iter(lambda: f.read(1048576), b""):
             h.update(block)
     return h.hexdigest()
+
+
+def validate_cached_row(row, model_names):
+    """Reuse a row only when its inputs and cached masks remain consistent.
+
+    Older manifests lack prediction-file hashes, so their masks still receive
+    geometry/ID checks. New writes additionally bind each cached PNG by SHA256.
+    Missing predictions return False for recomputation. Changed inputs or
+    corrupt cached files raise instead of silently mixing experiment states.
+    """
+    destinations={name:Path(row[f"{name}_pred_path"]) for name in model_names}
+    if not all(path.is_file() for path in destinations.values()):
+        return False
+    for path_key,hash_key in (("image_path","rgb_sha256"),("gt_path","gt_sha256")):
+        if not row.get(path_key) or not row.get(hash_key):
+            raise ValueError("Cached row lacks input SHA256 provenance; use a fresh output directory")
+        source=Path(row[path_key])
+        if not source.is_file() or sha(source)!=row[hash_key]:
+            raise ValueError(f"Cached input SHA256 mismatch: {source}; use a fresh output directory")
+    try:
+        with Image.open(row["gt_path"]) as source:
+            gt=np.asarray(source)
+        for name,path in destinations.items():
+            expected=row.get(f"{name}_pred_sha256")
+            if expected and sha(path)!=expected:
+                raise ValueError(f"Cached prediction SHA256 mismatch: {path}")
+            with Image.open(path) as source:
+                prediction=np.asarray(source)
+            confusion_matrix(gt,prediction)
+    except (OSError,ValueError) as error:
+        raise ValueError(f"Invalid cached prediction for {row.get('image_id')}: {error}") from error
+    return True
 
 
 def run(args):
@@ -48,15 +81,18 @@ def run(args):
         for key in ("checkpoints", "precision", "inference", "input", "code_sha256", "torch"):
             if previous.get(key) != metadata[key]:
                 raise ValueError(f"Existing predictions have different {key}; use a fresh --output directory")
-    meta_path.write_text(json.dumps(metadata, indent=2))
     done, rows, start = set(), [], time.monotonic()
     manifest_path = args.output / ("adapted_manifest.csv" if args.adapted else "manifest.csv")
     if manifest_path.exists():
-        rows = pd.read_csv(manifest_path).to_dict("records")
+        rows = pd.read_csv(manifest_path,keep_default_na=False).to_dict("records")
+        if len({row["image_id"] for row in rows})!=len(rows):
+            raise ValueError("Existing inference manifest has duplicate image IDs")
         for row in rows:
-            if all(Path(row[f"{name}_pred_path"]).exists() for name in models):
+            if validate_cached_row(row,models):
                 done.add(row["image_id"])
         rows = [r for r in rows if r["image_id"] in done]
+    # Preserve prior run evidence when any cached row fails validation.
+    meta_path.write_text(json.dumps(metadata, indent=2))
     while len(done) < args.expected:
         available = sorted(args.data.glob("rgb_anon/*/val/*/*_rgb_anon.png"))
         progress = False
@@ -90,6 +126,7 @@ def run(args):
                         raise ValueError("Prediction and original GT shape mismatch")
                 Image.fromarray(labels).save(destination)
                 row[f"{name}_pred_path"] = str(destination)
+                row[f"{name}_pred_sha256"] = sha(destination)
                 row[f"{name}_seconds"] = time.monotonic() - before
                 row[f"{name}_peak_gpu_bytes"] = torch.cuda.max_memory_allocated() if args.device.startswith("cuda") else 0
                 LOG.info("%s %s %.2fs", name, image_id, row[f"{name}_seconds"])

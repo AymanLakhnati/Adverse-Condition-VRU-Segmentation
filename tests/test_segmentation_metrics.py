@@ -176,3 +176,22 @@ def test_explicit_project_path_root_for_nested_inference_manifest(tmp_path):
     assert result["models"]["mic"]["pooled"]["vru_mean_iou"]==1
     assert result["models"]["hrda"]["pooled"]["valid_pixels"]==3
     assert result["dataset"]["mask_path_root"]==str(project.resolve())
+
+
+def test_manifest_checks_provided_gt_hash_before_scoring(tmp_path):
+    import hashlib
+    gt=tmp_path/"example_gt_labelTrainIds.png"
+    pred=tmp_path/"example_mic.png"
+    mask=np.array([[11,12,18]],dtype=np.uint8)
+    Image.fromarray(mask).save(gt)
+    Image.fromarray(mask).save(pred)
+    row=dict(image_id="example",condition="fog",gt_path=gt.name,
+             hrda_pred_path=pred.name,mic_pred_path=pred.name,
+             gt_sha256=hashlib.sha256(gt.read_bytes()).hexdigest())
+    manifest=tmp_path/"manifest.csv"
+    pd.DataFrame([row]).to_csv(manifest,index=False)
+    result=evaluate_manifest(manifest,tmp_path/"valid",bootstrap_repeats=0)
+    assert result["dataset"]["verified_manifest_mask_sha256_count"]==1
+    Image.fromarray(np.array([[11,11,18]],dtype=np.uint8)).save(gt)
+    with pytest.raises(ValueError,match="Manifest SHA256 mismatch"):
+        evaluate_manifest(manifest,tmp_path/"changed",bootstrap_repeats=0)

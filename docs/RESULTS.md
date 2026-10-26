@@ -75,3 +75,7 @@ No material aggregate implementation discrepancy was found. Remaining limits inc
 ## Local checks
 
 An independent `python -m pytest -q` run on 26 October 2026 completed with **24 passed in 17.99 seconds**. The suite covers metrics/encoding, inference-grid logic and train-only tuning/provenance behavior. Tests establish selected implementation properties rather than independent deployment safety. The result tables above were audited against completed artifacts rather than inferred from tests or literature.
+
+## Software integrity revision
+
+After the completed experiment, source/cache and manifest hash checks were strengthened without changing measured artifacts. The expanded local suite passed **30 tests in 10.23 seconds** on 26 October 2026; JUnit evidence is `results/reproducibility/revision_tests.xml`. The original 24-test record remains available. See [revision notes](REVISION_NOTES.md) and the separately labeled [recording-family influence analysis](RECORDING_SENSITIVITY.md).

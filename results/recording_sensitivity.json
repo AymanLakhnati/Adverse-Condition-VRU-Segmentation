@@ -1,0 +1,1879 @@
+{
+  "scope": "Exploratory leave-one-recording-family-out influence on completed fixed-model validation counts; no inference",
+  "not_a_confidence_interval": true,
+  "prespecified_hypothesis_unchanged": true,
+  "grouping": {
+    "same_rule_as": "roadseg.tune_dinov3.recording_family",
+    "expression": "(?:GOPR|GP\\d{2})(\\d{4})",
+    "rule": "Parse sequence prefix before _frame_; fullmatch alias expression; condition/recording_#### is group. Unmatched sequence prefixes remain unchanged.",
+    "limitation": "Conservative filename heuristic; recording family does not prove geographic/scene independence or temporal adjacency"
+  },
+  "source_counts_sha256": "e721360b1bb087100957d2adeba632ec48c40f3747a35a269b4ed299722c6457",
+  "source_summary_sha256": "c8fdaaace32b439c713bd22d7eac3dc4af75e350d7057072be08945bd227ecf2",
+  "score_unit": "fraction",
+  "difference_unit": "percentage_points",
+  "baseline": {
+    "models": {
+      "hrda": {
+        "conditions": {
+          "fog": {
+            "vru_mean_iou": 0.6972982805263174,
+            "class_iou": {
+              "person": 0.7122139513853419,
+              "rider": 0.7142798707407861,
+              "bicycle": 0.6654010194528243
+            }
+          },
+          "night": {
+            "vru_mean_iou": 0.34445807085839647,
+            "class_iou": {
+              "person": 0.41771973997327316,
+              "rider": 0.11166711748264359,
+              "bicycle": 0.5039873551192726
+            }
+          },
+          "rain": {
+            "vru_mean_iou": 0.6628623391189725,
+            "class_iou": {
+              "person": 0.7517806420663274,
+              "rider": 0.6720459518599562,
+              "bicycle": 0.5647604234306338
+            }
+          },
+          "snow": {
+            "vru_mean_iou": 0.48023619448470717,
+            "class_iou": {
+              "person": 0.7729344464590974,
+              "rider": 0.03041787174628503,
+              "bicycle": 0.6373562652487391
+            }
+          }
+        },
+        "W": 0.34445807085839647,
+        "weakest_conditions": [
+          "night"
+        ]
+      },
+      "mic": {
+        "conditions": {
+          "fog": {
+            "vru_mean_iou": 0.7025126263268234,
+            "class_iou": {
+              "person": 0.7018753193235784,
+              "rider": 0.6995386158475426,
+              "bicycle": 0.7061239438093494
+            }
+          },
+          "night": {
+            "vru_mean_iou": 0.38575805519527545,
+            "class_iou": {
+              "person": 0.4699201771720271,
+              "rider": 0.1388089240734077,
+              "bicycle": 0.5485450643403915
+            }
+          },
+          "rain": {
+            "vru_mean_iou": 0.6587935041460921,
+            "class_iou": {
+              "person": 0.7732263779577169,
+              "rider": 0.6685796269727403,
+              "bicycle": 0.5345745075078191
+            }
+          },
+          "snow": {
+            "vru_mean_iou": 0.5060184583389289,
+            "class_iou": {
+              "person": 0.8146900876859396,
+              "rider": 0.029646522234891677,
+              "bicycle": 0.6737187650959554
+            }
+          }
+        },
+        "W": 0.38575805519527545,
+        "weakest_conditions": [
+          "night"
+        ]
+      }
+    },
+    "delta_W_pp": 4.1299984336878985
+  },
+  "ground_truth_support": {
+    "fog": {
+      "images": 100,
+      "recording_families": 2,
+      "classes": {
+        "person": {
+          "gt_pixels": 108986,
+          "gt_positive_images": 37,
+          "gt_positive_recording_families": 2
+        },
+        "rider": {
+          "gt_pixels": 20814,
+          "gt_positive_images": 10,
+          "gt_positive_recording_families": 2
+        },
+        "bicycle": {
+          "gt_pixels": 33036,
+          "gt_positive_images": 10,
+          "gt_positive_recording_families": 2
+        }
+      }
+    },
+    "night": {
+      "images": 106,
+      "recording_families": 2,
+      "classes": {
+        "person": {
+          "gt_pixels": 350880,
+          "gt_positive_images": 57,
+          "gt_positive_recording_families": 2
+        },
+        "rider": {
+          "gt_pixels": 21587,
+          "gt_positive_images": 25,
+          "gt_positive_recording_families": 2
+        },
+        "bicycle": {
+          "gt_pixels": 459474,
+          "gt_positive_images": 34,
+          "gt_positive_recording_families": 2
+        }
+      }
+    },
+    "rain": {
+      "images": 100,
+      "recording_families": 4,
+      "classes": {
+        "person": {
+          "gt_pixels": 372839,
+          "gt_positive_images": 39,
+          "gt_positive_recording_families": 4
+        },
+        "rider": {
+          "gt_pixels": 23556,
+          "gt_positive_images": 8,
+          "gt_positive_recording_families": 3
+        },
+        "bicycle": {
+          "gt_pixels": 54158,
+          "gt_positive_images": 8,
+          "gt_positive_recording_families": 3
+        }
+      }
+    },
+    "snow": {
+      "images": 100,
+      "recording_families": 6,
+      "classes": {
+        "person": {
+          "gt_pixels": 425445,
+          "gt_positive_images": 59,
+          "gt_positive_recording_families": 6
+        },
+        "rider": {
+          "gt_pixels": 1867,
+          "gt_positive_images": 2,
+          "gt_positive_recording_families": 2
+        },
+        "bicycle": {
+          "gt_pixels": 77059,
+          "gt_positive_images": 8,
+          "gt_positive_recording_families": 3
+        }
+      }
+    }
+  },
+  "omission_summary": {
+    "fog": {
+      "omissions": 2,
+      "delta_W_pp_after_omission": {
+        "minimum": 4.1299984336878985,
+        "maximum": 4.1299984336878985,
+        "defined_omissions": 2,
+        "undefined_omissions": 0
+      },
+      "change_in_delta_W_pp": {
+        "minimum": 0.0,
+        "maximum": 0.0,
+        "defined_omissions": 2,
+        "undefined_omissions": 0
+      },
+      "affected_condition_V_change_pp": {
+        "hrda": {
+          "minimum": -21.656612521507558,
+          "maximum": -1.4551353528451827,
+          "defined_omissions": 2,
+          "undefined_omissions": 0
+        },
+        "mic": {
+          "minimum": -18.991350639059167,
+          "maximum": -3.0864607509548336,
+          "defined_omissions": 2,
+          "undefined_omissions": 0
+        }
+      }
+    },
+    "night": {
+      "omissions": 2,
+      "delta_W_pp_after_omission": {
+        "minimum": 3.845832447645281,
+        "maximum": 7.457879201111048,
+        "defined_omissions": 2,
+        "undefined_omissions": 0
+      },
+      "change_in_delta_W_pp": {
+        "minimum": -0.28416598604261756,
+        "maximum": 3.3278807674231494,
+        "defined_omissions": 2,
+        "undefined_omissions": 0
+      },
+      "affected_condition_V_change_pp": {
+        "hrda": {
+          "minimum": -9.660606110723188,
+          "maximum": 2.0186506891433864,
+          "defined_omissions": 2,
+          "undefined_omissions": 0
+        },
+        "mic": {
+          "minimum": -6.332725343300039,
+          "maximum": 1.7344847031007693,
+          "defined_omissions": 2,
+          "undefined_omissions": 0
+        }
+      }
+    },
+    "rain": {
+      "omissions": 4,
+      "delta_W_pp_after_omission": {
+        "minimum": 4.1299984336878985,
+        "maximum": 4.1299984336878985,
+        "defined_omissions": 4,
+        "undefined_omissions": 0
+      },
+      "change_in_delta_W_pp": {
+        "minimum": 0.0,
+        "maximum": 0.0,
+        "defined_omissions": 4,
+        "undefined_omissions": 0
+      },
+      "affected_condition_V_change_pp": {
+        "hrda": {
+          "minimum": -21.36405030932098,
+          "maximum": 4.038573318350036,
+          "defined_omissions": 4,
+          "undefined_omissions": 0
+        },
+        "mic": {
+          "minimum": -21.356747245713674,
+          "maximum": 4.6742222695098645,
+          "defined_omissions": 4,
+          "undefined_omissions": 0
+        }
+      }
+    },
+    "snow": {
+      "omissions": 6,
+      "delta_W_pp_after_omission": {
+        "minimum": 4.1299984336878985,
+        "maximum": 4.1299984336878985,
+        "defined_omissions": 6,
+        "undefined_omissions": 0
+      },
+      "change_in_delta_W_pp": {
+        "minimum": 0.0,
+        "maximum": 0.0,
+        "defined_omissions": 6,
+        "undefined_omissions": 0
+      },
+      "affected_condition_V_change_pp": {
+        "hrda": {
+          "minimum": -2.0767915035101003,
+          "maximum": 6.614959472329845,
+          "defined_omissions": 6,
+          "undefined_omissions": 0
+        },
+        "mic": {
+          "minimum": -1.7491709928663057,
+          "maximum": 10.341205704505596,
+          "defined_omissions": 6,
+          "undefined_omissions": 0
+        }
+      }
+    }
+  },
+  "omissions": [
+    {
+      "omitted_condition": "fog",
+      "omitted_family": "recording_0475",
+      "omitted_sequence_aliases": [
+        "GP020475"
+      ],
+      "omitted_images": 22,
+      "remaining_condition_images": 78,
+      "remaining_validation_images": 384,
+      "omitted_rider_gt_pixels": 45,
+      "result": {
+        "models": {
+          "hrda": {
+            "conditions": {
+              "fog": {
+                "vru_mean_iou": 0.6827469269978655,
+                "class_iou": {
+                  "person": 0.6896351743205881,
+                  "rider": 0.7155970822063765,
+                  "bicycle": 0.6430085244666321
+                }
+              },
+              "night": {
+                "vru_mean_iou": 0.34445807085839647,
+                "class_iou": {
+                  "person": 0.41771973997327316,
+                  "rider": 0.11166711748264359,
+                  "bicycle": 0.5039873551192726
+                }
+              },
+              "rain": {
+                "vru_mean_iou": 0.6628623391189725,
+                "class_iou": {
+                  "person": 0.7517806420663274,
+                  "rider": 0.6720459518599562,
+                  "bicycle": 0.5647604234306338
+                }
+              },
+              "snow": {
+                "vru_mean_iou": 0.48023619448470717,
+                "class_iou": {
+                  "person": 0.7729344464590974,
+                  "rider": 0.03041787174628503,
+                  "bicycle": 0.6373562652487391
+                }
+              }
+            },
+            "W": 0.34445807085839647,
+            "weakest_conditions": [
+              "night"
+            ]
+          },
+          "mic": {
+            "conditions": {
+              "fog": {
+                "vru_mean_iou": 0.6716480188172751,
+                "class_iou": {
+                  "person": 0.6734283477744487,
+                  "rider": 0.7008038585209003,
+                  "bicycle": 0.6407118501564762
+                }
+              },
+              "night": {
+                "vru_mean_iou": 0.38575805519527545,
+                "class_iou": {
+                  "person": 0.4699201771720271,
+                  "rider": 0.1388089240734077,
+                  "bicycle": 0.5485450643403915
+                }
+              },
+              "rain": {
+                "vru_mean_iou": 0.6587935041460921,
+                "class_iou": {
+                  "person": 0.7732263779577169,
+                  "rider": 0.6685796269727403,
+                  "bicycle": 0.5345745075078191
+                }
+              },
+              "snow": {
+                "vru_mean_iou": 0.5060184583389289,
+                "class_iou": {
+                  "person": 0.8146900876859396,
+                  "rider": 0.029646522234891677,
+                  "bicycle": 0.6737187650959554
+                }
+              }
+            },
+            "W": 0.38575805519527545,
+            "weakest_conditions": [
+              "night"
+            ]
+          }
+        },
+        "delta_W_pp": 4.1299984336878985
+      },
+      "changes_from_full_validation_pp": {
+        "hrda": {
+          "affected_condition_V": -1.4551353528451827,
+          "W": 0.0
+        },
+        "mic": {
+          "affected_condition_V": -3.0864607509548336,
+          "W": 0.0
+        }
+      },
+      "change_in_delta_W_pp": 0.0,
+      "undefined_conditions": {
+        "hrda": [],
+        "mic": []
+      }
+    },
+    {
+      "omitted_condition": "fog",
+      "omitted_family": "recording_0476",
+      "omitted_sequence_aliases": [
+        "GOPR0476",
+        "GP010476"
+      ],
+      "omitted_images": 78,
+      "remaining_condition_images": 22,
+      "remaining_validation_images": 328,
+      "omitted_rider_gt_pixels": 20769,
+      "result": {
+        "models": {
+          "hrda": {
+            "conditions": {
+              "fog": {
+                "vru_mean_iou": 0.4807321553112418,
+                "class_iou": {
+                  "person": 0.7491829343697554,
+                  "rider": 0.0,
+                  "bicycle": 0.69301353156397
+                }
+              },
+              "night": {
+                "vru_mean_iou": 0.34445807085839647,
+                "class_iou": {
+                  "person": 0.41771973997327316,
+                  "rider": 0.11166711748264359,
+                  "bicycle": 0.5039873551192726
+                }
+              },
+              "rain": {
+                "vru_mean_iou": 0.6628623391189725,
+                "class_iou": {
+                  "person": 0.7517806420663274,
+                  "rider": 0.6720459518599562,
+                  "bicycle": 0.5647604234306338
+                }
+              },
+              "snow": {
+                "vru_mean_iou": 0.48023619448470717,
+                "class_iou": {
+                  "person": 0.7729344464590974,
+                  "rider": 0.03041787174628503,
+                  "bicycle": 0.6373562652487391
+                }
+              }
+            },
+            "W": 0.34445807085839647,
+            "weakest_conditions": [
+              "night"
+            ]
+          },
+          "mic": {
+            "conditions": {
+              "fog": {
+                "vru_mean_iou": 0.5125991199362318,
+                "class_iou": {
+                  "person": 0.7484050420539085,
+                  "rider": 0.0,
+                  "bicycle": 0.7893923177547866
+                }
+              },
+              "night": {
+                "vru_mean_iou": 0.38575805519527545,
+                "class_iou": {
+                  "person": 0.4699201771720271,
+                  "rider": 0.1388089240734077,
+                  "bicycle": 0.5485450643403915
+                }
+              },
+              "rain": {
+                "vru_mean_iou": 0.6587935041460921,
+                "class_iou": {
+                  "person": 0.7732263779577169,
+                  "rider": 0.6685796269727403,
+                  "bicycle": 0.5345745075078191
+                }
+              },
+              "snow": {
+                "vru_mean_iou": 0.5060184583389289,
+                "class_iou": {
+                  "person": 0.8146900876859396,
+                  "rider": 0.029646522234891677,
+                  "bicycle": 0.6737187650959554
+                }
+              }
+            },
+            "W": 0.38575805519527545,
+            "weakest_conditions": [
+              "night"
+            ]
+          }
+        },
+        "delta_W_pp": 4.1299984336878985
+      },
+      "changes_from_full_validation_pp": {
+        "hrda": {
+          "affected_condition_V": -21.656612521507558,
+          "W": 0.0
+        },
+        "mic": {
+          "affected_condition_V": -18.991350639059167,
+          "W": 0.0
+        }
+      },
+      "change_in_delta_W_pp": 0.0,
+      "undefined_conditions": {
+        "hrda": [],
+        "mic": []
+      }
+    },
+    {
+      "omitted_condition": "night",
+      "omitted_family": "recording_0351",
+      "omitted_sequence_aliases": [
+        "GOPR0351"
+      ],
+      "omitted_images": 56,
+      "remaining_condition_images": 50,
+      "remaining_validation_images": 350,
+      "omitted_rider_gt_pixels": 11072,
+      "result": {
+        "models": {
+          "hrda": {
+            "conditions": {
+              "fog": {
+                "vru_mean_iou": 0.6972982805263174,
+                "class_iou": {
+                  "person": 0.7122139513853419,
+                  "rider": 0.7142798707407861,
+                  "bicycle": 0.6654010194528243
+                }
+              },
+              "night": {
+                "vru_mean_iou": 0.2478520097511646,
+                "class_iou": {
+                  "person": 0.32382955229250804,
+                  "rider": 0.2269262558545321,
+                  "bicycle": 0.19280022110645353
+                }
+              },
+              "rain": {
+                "vru_mean_iou": 0.6628623391189725,
+                "class_iou": {
+                  "person": 0.7517806420663274,
+                  "rider": 0.6720459518599562,
+                  "bicycle": 0.5647604234306338
+                }
+              },
+              "snow": {
+                "vru_mean_iou": 0.48023619448470717,
+                "class_iou": {
+                  "person": 0.7729344464590974,
+                  "rider": 0.03041787174628503,
+                  "bicycle": 0.6373562652487391
+                }
+              }
+            },
+            "W": 0.2478520097511646,
+            "weakest_conditions": [
+              "night"
+            ]
+          },
+          "mic": {
+            "conditions": {
+              "fog": {
+                "vru_mean_iou": 0.7025126263268234,
+                "class_iou": {
+                  "person": 0.7018753193235784,
+                  "rider": 0.6995386158475426,
+                  "bicycle": 0.7061239438093494
+                }
+              },
+              "night": {
+                "vru_mean_iou": 0.32243080176227507,
+                "class_iou": {
+                  "person": 0.35656657442209466,
+                  "rider": 0.25320223705574596,
+                  "bicycle": 0.3575235938089845
+                }
+              },
+              "rain": {
+                "vru_mean_iou": 0.6587935041460921,
+                "class_iou": {
+                  "person": 0.7732263779577169,
+                  "rider": 0.6685796269727403,
+                  "bicycle": 0.5345745075078191
+                }
+              },
+              "snow": {
+                "vru_mean_iou": 0.5060184583389289,
+                "class_iou": {
+                  "person": 0.8146900876859396,
+                  "rider": 0.029646522234891677,
+                  "bicycle": 0.6737187650959554
+                }
+              }
+            },
+            "W": 0.32243080176227507,
+            "weakest_conditions": [
+              "night"
+            ]
+          }
+        },
+        "delta_W_pp": 7.457879201111048
+      },
+      "changes_from_full_validation_pp": {
+        "hrda": {
+          "affected_condition_V": -9.660606110723188,
+          "W": -9.660606110723188
+        },
+        "mic": {
+          "affected_condition_V": -6.332725343300039,
+          "W": -6.332725343300039
+        }
+      },
+      "change_in_delta_W_pp": 3.3278807674231494,
+      "undefined_conditions": {
+        "hrda": [],
+        "mic": []
+      }
+    },
+    {
+      "omitted_condition": "night",
+      "omitted_family": "recording_0356",
+      "omitted_sequence_aliases": [
+        "GOPR0356"
+      ],
+      "omitted_images": 50,
+      "remaining_condition_images": 56,
+      "remaining_validation_images": 356,
+      "omitted_rider_gt_pixels": 10515,
+      "result": {
+        "models": {
+          "hrda": {
+            "conditions": {
+              "fog": {
+                "vru_mean_iou": 0.6972982805263174,
+                "class_iou": {
+                  "person": 0.7122139513853419,
+                  "rider": 0.7142798707407861,
+                  "bicycle": 0.6654010194528243
+                }
+              },
+              "night": {
+                "vru_mean_iou": 0.36464457774983033,
+                "class_iou": {
+                  "person": 0.4762455337117755,
+                  "rider": 0.0005313025768174976,
+                  "bicycle": 0.6171568969608979
+                }
+              },
+              "rain": {
+                "vru_mean_iou": 0.6628623391189725,
+                "class_iou": {
+                  "person": 0.7517806420663274,
+                  "rider": 0.6720459518599562,
+                  "bicycle": 0.5647604234306338
+                }
+              },
+              "snow": {
+                "vru_mean_iou": 0.48023619448470717,
+                "class_iou": {
+                  "person": 0.7729344464590974,
+                  "rider": 0.03041787174628503,
+                  "bicycle": 0.6373562652487391
+                }
+              }
+            },
+            "W": 0.36464457774983033,
+            "weakest_conditions": [
+              "night"
+            ]
+          },
+          "mic": {
+            "conditions": {
+              "fog": {
+                "vru_mean_iou": 0.7025126263268234,
+                "class_iou": {
+                  "person": 0.7018753193235784,
+                  "rider": 0.6995386158475426,
+                  "bicycle": 0.7061239438093494
+                }
+              },
+              "night": {
+                "vru_mean_iou": 0.40310290222628314,
+                "class_iou": {
+                  "person": 0.535007174168251,
+                  "rider": 0.02503140139960524,
+                  "bicycle": 0.6492701311109932
+                }
+              },
+              "rain": {
+                "vru_mean_iou": 0.6587935041460921,
+                "class_iou": {
+                  "person": 0.7732263779577169,
+                  "rider": 0.6685796269727403,
+                  "bicycle": 0.5345745075078191
+                }
+              },
+              "snow": {
+                "vru_mean_iou": 0.5060184583389289,
+                "class_iou": {
+                  "person": 0.8146900876859396,
+                  "rider": 0.029646522234891677,
+                  "bicycle": 0.6737187650959554
+                }
+              }
+            },
+            "W": 0.40310290222628314,
+            "weakest_conditions": [
+              "night"
+            ]
+          }
+        },
+        "delta_W_pp": 3.845832447645281
+      },
+      "changes_from_full_validation_pp": {
+        "hrda": {
+          "affected_condition_V": 2.0186506891433864,
+          "W": 2.0186506891433864
+        },
+        "mic": {
+          "affected_condition_V": 1.7344847031007693,
+          "W": 1.7344847031007693
+        }
+      },
+      "change_in_delta_W_pp": -0.28416598604261756,
+      "undefined_conditions": {
+        "hrda": [],
+        "mic": []
+      }
+    },
+    {
+      "omitted_condition": "rain",
+      "omitted_family": "recording_0400",
+      "omitted_sequence_aliases": [
+        "GOPR0400",
+        "GP010400",
+        "GP030400"
+      ],
+      "omitted_images": 18,
+      "remaining_condition_images": 82,
+      "remaining_validation_images": 388,
+      "omitted_rider_gt_pixels": 19151,
+      "result": {
+        "models": {
+          "hrda": {
+            "conditions": {
+              "fog": {
+                "vru_mean_iou": 0.6972982805263174,
+                "class_iou": {
+                  "person": 0.7122139513853419,
+                  "rider": 0.7142798707407861,
+                  "bicycle": 0.6654010194528243
+                }
+              },
+              "night": {
+                "vru_mean_iou": 0.34445807085839647,
+                "class_iou": {
+                  "person": 0.41771973997327316,
+                  "rider": 0.11166711748264359,
+                  "bicycle": 0.5039873551192726
+                }
+              },
+              "rain": {
+                "vru_mean_iou": 0.4492218360257627,
+                "class_iou": {
+                  "person": 0.7794230484472384,
+                  "rider": 0.0033967391304347825,
+                  "bicycle": 0.5648457204996149
+                }
+              },
+              "snow": {
+                "vru_mean_iou": 0.48023619448470717,
+                "class_iou": {
+                  "person": 0.7729344464590974,
+                  "rider": 0.03041787174628503,
+                  "bicycle": 0.6373562652487391
+                }
+              }
+            },
+            "W": 0.34445807085839647,
+            "weakest_conditions": [
+              "night"
+            ]
+          },
+          "mic": {
+            "conditions": {
+              "fog": {
+                "vru_mean_iou": 0.7025126263268234,
+                "class_iou": {
+                  "person": 0.7018753193235784,
+                  "rider": 0.6995386158475426,
+                  "bicycle": 0.7061239438093494
+                }
+              },
+              "night": {
+                "vru_mean_iou": 0.38575805519527545,
+                "class_iou": {
+                  "person": 0.4699201771720271,
+                  "rider": 0.1388089240734077,
+                  "bicycle": 0.5485450643403915
+                }
+              },
+              "rain": {
+                "vru_mean_iou": 0.4452260316889553,
+                "class_iou": {
+                  "person": 0.7994087837837838,
+                  "rider": 0.0015600624024961,
+                  "bicycle": 0.5347092488805859
+                }
+              },
+              "snow": {
+                "vru_mean_iou": 0.5060184583389289,
+                "class_iou": {
+                  "person": 0.8146900876859396,
+                  "rider": 0.029646522234891677,
+                  "bicycle": 0.6737187650959554
+                }
+              }
+            },
+            "W": 0.38575805519527545,
+            "weakest_conditions": [
+              "night"
+            ]
+          }
+        },
+        "delta_W_pp": 4.1299984336878985
+      },
+      "changes_from_full_validation_pp": {
+        "hrda": {
+          "affected_condition_V": -21.36405030932098,
+          "W": 0.0
+        },
+        "mic": {
+          "affected_condition_V": -21.356747245713674,
+          "W": 0.0
+        }
+      },
+      "change_in_delta_W_pp": 0.0,
+      "undefined_conditions": {
+        "hrda": [],
+        "mic": []
+      }
+    },
+    {
+      "omitted_condition": "rain",
+      "omitted_family": "recording_0402",
+      "omitted_sequence_aliases": [
+        "GOPR0402",
+        "GP020402",
+        "GP030402"
+      ],
+      "omitted_images": 67,
+      "remaining_condition_images": 33,
+      "remaining_validation_images": 339,
+      "omitted_rider_gt_pixels": 2206,
+      "result": {
+        "models": {
+          "hrda": {
+            "conditions": {
+              "fog": {
+                "vru_mean_iou": 0.6972982805263174,
+                "class_iou": {
+                  "person": 0.7122139513853419,
+                  "rider": 0.7142798707407861,
+                  "bicycle": 0.6654010194528243
+                }
+              },
+              "night": {
+                "vru_mean_iou": 0.34445807085839647,
+                "class_iou": {
+                  "person": 0.41771973997327316,
+                  "rider": 0.11166711748264359,
+                  "bicycle": 0.5039873551192726
+                }
+              },
+              "rain": {
+                "vru_mean_iou": 0.7032480723024729,
+                "class_iou": {
+                  "person": 0.7382175967771092,
+                  "rider": 0.735144385026738,
+                  "bicycle": 0.6363822351035717
+                }
+              },
+              "snow": {
+                "vru_mean_iou": 0.48023619448470717,
+                "class_iou": {
+                  "person": 0.7729344464590974,
+                  "rider": 0.03041787174628503,
+                  "bicycle": 0.6373562652487391
+                }
+              }
+            },
+            "W": 0.34445807085839647,
+            "weakest_conditions": [
+              "night"
+            ]
+          },
+          "mic": {
+            "conditions": {
+              "fog": {
+                "vru_mean_iou": 0.7025126263268234,
+                "class_iou": {
+                  "person": 0.7018753193235784,
+                  "rider": 0.6995386158475426,
+                  "bicycle": 0.7061239438093494
+                }
+              },
+              "night": {
+                "vru_mean_iou": 0.38575805519527545,
+                "class_iou": {
+                  "person": 0.4699201771720271,
+                  "rider": 0.1388089240734077,
+                  "bicycle": 0.5485450643403915
+                }
+              },
+              "rain": {
+                "vru_mean_iou": 0.7055357268411907,
+                "class_iou": {
+                  "person": 0.7784258500614503,
+                  "rider": 0.7280790872147546,
+                  "bicycle": 0.6101022432473676
+                }
+              },
+              "snow": {
+                "vru_mean_iou": 0.5060184583389289,
+                "class_iou": {
+                  "person": 0.8146900876859396,
+                  "rider": 0.029646522234891677,
+                  "bicycle": 0.6737187650959554
+                }
+              }
+            },
+            "W": 0.38575805519527545,
+            "weakest_conditions": [
+              "night"
+            ]
+          }
+        },
+        "delta_W_pp": 4.1299984336878985
+      },
+      "changes_from_full_validation_pp": {
+        "hrda": {
+          "affected_condition_V": 4.038573318350036,
+          "W": 0.0
+        },
+        "mic": {
+          "affected_condition_V": 4.6742222695098645,
+          "W": 0.0
+        }
+      },
+      "change_in_delta_W_pp": 0.0,
+      "undefined_conditions": {
+        "hrda": [],
+        "mic": []
+      }
+    },
+    {
+      "omitted_condition": "rain",
+      "omitted_family": "recording_0571",
+      "omitted_sequence_aliases": [
+        "GOPR0571"
+      ],
+      "omitted_images": 2,
+      "remaining_condition_images": 98,
+      "remaining_validation_images": 404,
+      "omitted_rider_gt_pixels": 2199,
+      "result": {
+        "models": {
+          "hrda": {
+            "conditions": {
+              "fog": {
+                "vru_mean_iou": 0.6972982805263174,
+                "class_iou": {
+                  "person": 0.7122139513853419,
+                  "rider": 0.7142798707407861,
+                  "bicycle": 0.6654010194528243
+                }
+              },
+              "night": {
+                "vru_mean_iou": 0.34445807085839647,
+                "class_iou": {
+                  "person": 0.41771973997327316,
+                  "rider": 0.11166711748264359,
+                  "bicycle": 0.5039873551192726
+                }
+              },
+              "rain": {
+                "vru_mean_iou": 0.6543868554545985,
+                "class_iou": {
+                  "person": 0.7069533626225076,
+                  "rider": 0.7352199375881674,
+                  "bicycle": 0.5209872661531206
+                }
+              },
+              "snow": {
+                "vru_mean_iou": 0.48023619448470717,
+                "class_iou": {
+                  "person": 0.7729344464590974,
+                  "rider": 0.03041787174628503,
+                  "bicycle": 0.6373562652487391
+                }
+              }
+            },
+            "W": 0.34445807085839647,
+            "weakest_conditions": [
+              "night"
+            ]
+          },
+          "mic": {
+            "conditions": {
+              "fog": {
+                "vru_mean_iou": 0.7025126263268234,
+                "class_iou": {
+                  "person": 0.7018753193235784,
+                  "rider": 0.6995386158475426,
+                  "bicycle": 0.7061239438093494
+                }
+              },
+              "night": {
+                "vru_mean_iou": 0.38575805519527545,
+                "class_iou": {
+                  "person": 0.4699201771720271,
+                  "rider": 0.1388089240734077,
+                  "bicycle": 0.5485450643403915
+                }
+              },
+              "rain": {
+                "vru_mean_iou": 0.6420002985031438,
+                "class_iou": {
+                  "person": 0.7128782755705833,
+                  "rider": 0.7258284334722168,
+                  "bicycle": 0.4872941864666311
+                }
+              },
+              "snow": {
+                "vru_mean_iou": 0.5060184583389289,
+                "class_iou": {
+                  "person": 0.8146900876859396,
+                  "rider": 0.029646522234891677,
+                  "bicycle": 0.6737187650959554
+                }
+              }
+            },
+            "W": 0.38575805519527545,
+            "weakest_conditions": [
+              "night"
+            ]
+          }
+        },
+        "delta_W_pp": 4.1299984336878985
+      },
+      "changes_from_full_validation_pp": {
+        "hrda": {
+          "affected_condition_V": -0.8475483664374006,
+          "W": 0.0
+        },
+        "mic": {
+          "affected_condition_V": -1.6793205642948283,
+          "W": 0.0
+        }
+      },
+      "change_in_delta_W_pp": 0.0,
+      "undefined_conditions": {
+        "hrda": [],
+        "mic": []
+      }
+    },
+    {
+      "omitted_condition": "rain",
+      "omitted_family": "recording_0572",
+      "omitted_sequence_aliases": [
+        "GOPR0572"
+      ],
+      "omitted_images": 13,
+      "remaining_condition_images": 87,
+      "remaining_validation_images": 393,
+      "omitted_rider_gt_pixels": 0,
+      "result": {
+        "models": {
+          "hrda": {
+            "conditions": {
+              "fog": {
+                "vru_mean_iou": 0.6972982805263174,
+                "class_iou": {
+                  "person": 0.7122139513853419,
+                  "rider": 0.7142798707407861,
+                  "bicycle": 0.6654010194528243
+                }
+              },
+              "night": {
+                "vru_mean_iou": 0.34445807085839647,
+                "class_iou": {
+                  "person": 0.41771973997327316,
+                  "rider": 0.11166711748264359,
+                  "bicycle": 0.5039873551192726
+                }
+              },
+              "rain": {
+                "vru_mean_iou": 0.6311674081101727,
+                "class_iou": {
+                  "person": 0.7594669081969334,
+                  "rider": 0.6720459518599562,
+                  "bicycle": 0.46198936427362824
+                }
+              },
+              "snow": {
+                "vru_mean_iou": 0.48023619448470717,
+                "class_iou": {
+                  "person": 0.7729344464590974,
+                  "rider": 0.03041787174628503,
+                  "bicycle": 0.6373562652487391
+                }
+              }
+            },
+            "W": 0.34445807085839647,
+            "weakest_conditions": [
+              "night"
+            ]
+          },
+          "mic": {
+            "conditions": {
+              "fog": {
+                "vru_mean_iou": 0.7025126263268234,
+                "class_iou": {
+                  "person": 0.7018753193235784,
+                  "rider": 0.6995386158475426,
+                  "bicycle": 0.7061239438093494
+                }
+              },
+              "night": {
+                "vru_mean_iou": 0.38575805519527545,
+                "class_iou": {
+                  "person": 0.4699201771720271,
+                  "rider": 0.1388089240734077,
+                  "bicycle": 0.5485450643403915
+                }
+              },
+              "rain": {
+                "vru_mean_iou": 0.6297887068565456,
+                "class_iou": {
+                  "person": 0.7823512528862538,
+                  "rider": 0.6685796269727403,
+                  "bicycle": 0.4384352407106428
+                }
+              },
+              "snow": {
+                "vru_mean_iou": 0.5060184583389289,
+                "class_iou": {
+                  "person": 0.8146900876859396,
+                  "rider": 0.029646522234891677,
+                  "bicycle": 0.6737187650959554
+                }
+              }
+            },
+            "W": 0.38575805519527545,
+            "weakest_conditions": [
+              "night"
+            ]
+          }
+        },
+        "delta_W_pp": 4.1299984336878985
+      },
+      "changes_from_full_validation_pp": {
+        "hrda": {
+          "affected_condition_V": -3.169493100879983,
+          "W": 0.0
+        },
+        "mic": {
+          "affected_condition_V": -2.9004797289546413,
+          "W": 0.0
+        }
+      },
+      "change_in_delta_W_pp": 0.0,
+      "undefined_conditions": {
+        "hrda": [],
+        "mic": []
+      }
+    },
+    {
+      "omitted_condition": "snow",
+      "omitted_family": "recording_0122",
+      "omitted_sequence_aliases": [
+        "GOPR0122"
+      ],
+      "omitted_images": 33,
+      "remaining_condition_images": 67,
+      "remaining_validation_images": 373,
+      "omitted_rider_gt_pixels": 0,
+      "result": {
+        "models": {
+          "hrda": {
+            "conditions": {
+              "fog": {
+                "vru_mean_iou": 0.6972982805263174,
+                "class_iou": {
+                  "person": 0.7122139513853419,
+                  "rider": 0.7142798707407861,
+                  "bicycle": 0.6654010194528243
+                }
+              },
+              "night": {
+                "vru_mean_iou": 0.34445807085839647,
+                "class_iou": {
+                  "person": 0.41771973997327316,
+                  "rider": 0.11166711748264359,
+                  "bicycle": 0.5039873551192726
+                }
+              },
+              "rain": {
+                "vru_mean_iou": 0.6628623391189725,
+                "class_iou": {
+                  "person": 0.7517806420663274,
+                  "rider": 0.6720459518599562,
+                  "bicycle": 0.5647604234306338
+                }
+              },
+              "snow": {
+                "vru_mean_iou": 0.4888042650157252,
+                "class_iou": {
+                  "person": 0.7708437226821241,
+                  "rider": 0.03235044548154434,
+                  "bicycle": 0.6632186268835073
+                }
+              }
+            },
+            "W": 0.34445807085839647,
+            "weakest_conditions": [
+              "night"
+            ]
+          },
+          "mic": {
+            "conditions": {
+              "fog": {
+                "vru_mean_iou": 0.7025126263268234,
+                "class_iou": {
+                  "person": 0.7018753193235784,
+                  "rider": 0.6995386158475426,
+                  "bicycle": 0.7061239438093494
+                }
+              },
+              "night": {
+                "vru_mean_iou": 0.38575805519527545,
+                "class_iou": {
+                  "person": 0.4699201771720271,
+                  "rider": 0.1388089240734077,
+                  "bicycle": 0.5485450643403915
+                }
+              },
+              "rain": {
+                "vru_mean_iou": 0.6587935041460921,
+                "class_iou": {
+                  "person": 0.7732263779577169,
+                  "rider": 0.6685796269727403,
+                  "bicycle": 0.5345745075078191
+                }
+              },
+              "snow": {
+                "vru_mean_iou": 0.5032125021782822,
+                "class_iou": {
+                  "person": 0.8068386146774729,
+                  "rider": 0.030229362646654687,
+                  "bicycle": 0.672569529210719
+                }
+              }
+            },
+            "W": 0.38575805519527545,
+            "weakest_conditions": [
+              "night"
+            ]
+          }
+        },
+        "delta_W_pp": 4.1299984336878985
+      },
+      "changes_from_full_validation_pp": {
+        "hrda": {
+          "affected_condition_V": 0.8568070531018046,
+          "W": 0.0
+        },
+        "mic": {
+          "affected_condition_V": -0.28059561606467165,
+          "W": 0.0
+        }
+      },
+      "change_in_delta_W_pp": 0.0,
+      "undefined_conditions": {
+        "hrda": [],
+        "mic": []
+      }
+    },
+    {
+      "omitted_condition": "snow",
+      "omitted_family": "recording_0176",
+      "omitted_sequence_aliases": [
+        "GP030176"
+      ],
+      "omitted_images": 10,
+      "remaining_condition_images": 90,
+      "remaining_validation_images": 396,
+      "omitted_rider_gt_pixels": 0,
+      "result": {
+        "models": {
+          "hrda": {
+            "conditions": {
+              "fog": {
+                "vru_mean_iou": 0.6972982805263174,
+                "class_iou": {
+                  "person": 0.7122139513853419,
+                  "rider": 0.7142798707407861,
+                  "bicycle": 0.6654010194528243
+                }
+              },
+              "night": {
+                "vru_mean_iou": 0.34445807085839647,
+                "class_iou": {
+                  "person": 0.41771973997327316,
+                  "rider": 0.11166711748264359,
+                  "bicycle": 0.5039873551192726
+                }
+              },
+              "rain": {
+                "vru_mean_iou": 0.6628623391189725,
+                "class_iou": {
+                  "person": 0.7517806420663274,
+                  "rider": 0.6720459518599562,
+                  "bicycle": 0.5647604234306338
+                }
+              },
+              "snow": {
+                "vru_mean_iou": 0.45946827944960617,
+                "class_iou": {
+                  "person": 0.7106307013537944,
+                  "rider": 0.03041787174628503,
+                  "bicycle": 0.6373562652487391
+                }
+              }
+            },
+            "W": 0.34445807085839647,
+            "weakest_conditions": [
+              "night"
+            ]
+          },
+          "mic": {
+            "conditions": {
+              "fog": {
+                "vru_mean_iou": 0.7025126263268234,
+                "class_iou": {
+                  "person": 0.7018753193235784,
+                  "rider": 0.6995386158475426,
+                  "bicycle": 0.7061239438093494
+                }
+              },
+              "night": {
+                "vru_mean_iou": 0.38575805519527545,
+                "class_iou": {
+                  "person": 0.4699201771720271,
+                  "rider": 0.1388089240734077,
+                  "bicycle": 0.5485450643403915
+                }
+              },
+              "rain": {
+                "vru_mean_iou": 0.6587935041460921,
+                "class_iou": {
+                  "person": 0.7732263779577169,
+                  "rider": 0.6685796269727403,
+                  "bicycle": 0.5345745075078191
+                }
+              },
+              "snow": {
+                "vru_mean_iou": 0.48852674841026583,
+                "class_iou": {
+                  "person": 0.7622149578999504,
+                  "rider": 0.029646522234891677,
+                  "bicycle": 0.6737187650959554
+                }
+              }
+            },
+            "W": 0.38575805519527545,
+            "weakest_conditions": [
+              "night"
+            ]
+          }
+        },
+        "delta_W_pp": 4.1299984336878985
+      },
+      "changes_from_full_validation_pp": {
+        "hrda": {
+          "affected_condition_V": -2.0767915035101003,
+          "W": 0.0
+        },
+        "mic": {
+          "affected_condition_V": -1.7491709928663057,
+          "W": 0.0
+        }
+      },
+      "change_in_delta_W_pp": 0.0,
+      "undefined_conditions": {
+        "hrda": [],
+        "mic": []
+      }
+    },
+    {
+      "omitted_condition": "snow",
+      "omitted_family": "recording_0604",
+      "omitted_sequence_aliases": [
+        "GOPR0604"
+      ],
+      "omitted_images": 23,
+      "remaining_condition_images": 77,
+      "remaining_validation_images": 383,
+      "omitted_rider_gt_pixels": 328,
+      "result": {
+        "models": {
+          "hrda": {
+            "conditions": {
+              "fog": {
+                "vru_mean_iou": 0.6972982805263174,
+                "class_iou": {
+                  "person": 0.7122139513853419,
+                  "rider": 0.7142798707407861,
+                  "bicycle": 0.6654010194528243
+                }
+              },
+              "night": {
+                "vru_mean_iou": 0.34445807085839647,
+                "class_iou": {
+                  "person": 0.41771973997327316,
+                  "rider": 0.11166711748264359,
+                  "bicycle": 0.5039873551192726
+                }
+              },
+              "rain": {
+                "vru_mean_iou": 0.6628623391189725,
+                "class_iou": {
+                  "person": 0.7517806420663274,
+                  "rider": 0.6720459518599562,
+                  "bicycle": 0.5647604234306338
+                }
+              },
+              "snow": {
+                "vru_mean_iou": 0.4681640545155661,
+                "class_iou": {
+                  "person": 0.763668507111469,
+                  "rider": 0.0,
+                  "bicycle": 0.6408236564352291
+                }
+              }
+            },
+            "W": 0.34445807085839647,
+            "weakest_conditions": [
+              "night"
+            ]
+          },
+          "mic": {
+            "conditions": {
+              "fog": {
+                "vru_mean_iou": 0.7025126263268234,
+                "class_iou": {
+                  "person": 0.7018753193235784,
+                  "rider": 0.6995386158475426,
+                  "bicycle": 0.7061239438093494
+                }
+              },
+              "night": {
+                "vru_mean_iou": 0.38575805519527545,
+                "class_iou": {
+                  "person": 0.4699201771720271,
+                  "rider": 0.1388089240734077,
+                  "bicycle": 0.5485450643403915
+                }
+              },
+              "rain": {
+                "vru_mean_iou": 0.6587935041460921,
+                "class_iou": {
+                  "person": 0.7732263779577169,
+                  "rider": 0.6685796269727403,
+                  "bicycle": 0.5345745075078191
+                }
+              },
+              "snow": {
+                "vru_mean_iou": 0.4956912267871822,
+                "class_iou": {
+                  "person": 0.8104649386864263,
+                  "rider": 0.0,
+                  "bicycle": 0.6766087416751202
+                }
+              }
+            },
+            "W": 0.38575805519527545,
+            "weakest_conditions": [
+              "night"
+            ]
+          }
+        },
+        "delta_W_pp": 4.1299984336878985
+      },
+      "changes_from_full_validation_pp": {
+        "hrda": {
+          "affected_condition_V": -1.2072139969141082,
+          "W": 0.0
+        },
+        "mic": {
+          "affected_condition_V": -1.0327231551746696,
+          "W": 0.0
+        }
+      },
+      "change_in_delta_W_pp": 0.0,
+      "undefined_conditions": {
+        "hrda": [],
+        "mic": []
+      }
+    },
+    {
+      "omitted_condition": "snow",
+      "omitted_family": "recording_0605",
+      "omitted_sequence_aliases": [
+        "GOPR0605"
+      ],
+      "omitted_images": 3,
+      "remaining_condition_images": 97,
+      "remaining_validation_images": 403,
+      "omitted_rider_gt_pixels": 0,
+      "result": {
+        "models": {
+          "hrda": {
+            "conditions": {
+              "fog": {
+                "vru_mean_iou": 0.6972982805263174,
+                "class_iou": {
+                  "person": 0.7122139513853419,
+                  "rider": 0.7142798707407861,
+                  "bicycle": 0.6654010194528243
+                }
+              },
+              "night": {
+                "vru_mean_iou": 0.34445807085839647,
+                "class_iou": {
+                  "person": 0.41771973997327316,
+                  "rider": 0.11166711748264359,
+                  "bicycle": 0.5039873551192726
+                }
+              },
+              "rain": {
+                "vru_mean_iou": 0.6628623391189725,
+                "class_iou": {
+                  "person": 0.7517806420663274,
+                  "rider": 0.6720459518599562,
+                  "bicycle": 0.5647604234306338
+                }
+              },
+              "snow": {
+                "vru_mean_iou": 0.48237338089162546,
+                "class_iou": {
+                  "person": 0.7790809143619287,
+                  "rider": 0.03041787174628503,
+                  "bicycle": 0.6376213565666626
+                }
+              }
+            },
+            "W": 0.34445807085839647,
+            "weakest_conditions": [
+              "night"
+            ]
+          },
+          "mic": {
+            "conditions": {
+              "fog": {
+                "vru_mean_iou": 0.7025126263268234,
+                "class_iou": {
+                  "person": 0.7018753193235784,
+                  "rider": 0.6995386158475426,
+                  "bicycle": 0.7061239438093494
+                }
+              },
+              "night": {
+                "vru_mean_iou": 0.38575805519527545,
+                "class_iou": {
+                  "person": 0.4699201771720271,
+                  "rider": 0.1388089240734077,
+                  "bicycle": 0.5485450643403915
+                }
+              },
+              "rain": {
+                "vru_mean_iou": 0.6587935041460921,
+                "class_iou": {
+                  "person": 0.7732263779577169,
+                  "rider": 0.6685796269727403,
+                  "bicycle": 0.5345745075078191
+                }
+              },
+              "snow": {
+                "vru_mean_iou": 0.5097487831949109,
+                "class_iou": {
+                  "person": 0.8254591877593899,
+                  "rider": 0.029646522234891677,
+                  "bicycle": 0.6741406395904512
+                }
+              }
+            },
+            "W": 0.38575805519527545,
+            "weakest_conditions": [
+              "night"
+            ]
+          }
+        },
+        "delta_W_pp": 4.1299984336878985
+      },
+      "changes_from_full_validation_pp": {
+        "hrda": {
+          "affected_condition_V": 0.213718640691829,
+          "W": 0.0
+        },
+        "mic": {
+          "affected_condition_V": 0.37303248559820146,
+          "W": 0.0
+        }
+      },
+      "change_in_delta_W_pp": 0.0,
+      "undefined_conditions": {
+        "hrda": [],
+        "mic": []
+      }
+    },
+    {
+      "omitted_condition": "snow",
+      "omitted_family": "recording_0606",
+      "omitted_sequence_aliases": [
+        "GOPR0606"
+      ],
+      "omitted_images": 14,
+      "remaining_condition_images": 86,
+      "remaining_validation_images": 392,
+      "omitted_rider_gt_pixels": 1539,
+      "result": {
+        "models": {
+          "hrda": {
+            "conditions": {
+              "fog": {
+                "vru_mean_iou": 0.6972982805263174,
+                "class_iou": {
+                  "person": 0.7122139513853419,
+                  "rider": 0.7142798707407861,
+                  "bicycle": 0.6654010194528243
+                }
+              },
+              "night": {
+                "vru_mean_iou": 0.34445807085839647,
+                "class_iou": {
+                  "person": 0.41771973997327316,
+                  "rider": 0.11166711748264359,
+                  "bicycle": 0.5039873551192726
+                }
+              },
+              "rain": {
+                "vru_mean_iou": 0.6628623391189725,
+                "class_iou": {
+                  "person": 0.7517806420663274,
+                  "rider": 0.6720459518599562,
+                  "bicycle": 0.5647604234306338
+                }
+              },
+              "snow": {
+                "vru_mean_iou": 0.5463857892080056,
+                "class_iou": {
+                  "person": 0.8010877674295478,
+                  "rider": 0.24938675388389206,
+                  "bicycle": 0.588682846310577
+                }
+              }
+            },
+            "W": 0.34445807085839647,
+            "weakest_conditions": [
+              "night"
+            ]
+          },
+          "mic": {
+            "conditions": {
+              "fog": {
+                "vru_mean_iou": 0.7025126263268234,
+                "class_iou": {
+                  "person": 0.7018753193235784,
+                  "rider": 0.6995386158475426,
+                  "bicycle": 0.7061239438093494
+                }
+              },
+              "night": {
+                "vru_mean_iou": 0.38575805519527545,
+                "class_iou": {
+                  "person": 0.4699201771720271,
+                  "rider": 0.1388089240734077,
+                  "bicycle": 0.5485450643403915
+                }
+              },
+              "rain": {
+                "vru_mean_iou": 0.6587935041460921,
+                "class_iou": {
+                  "person": 0.7732263779577169,
+                  "rider": 0.6685796269727403,
+                  "bicycle": 0.5345745075078191
+                }
+              },
+              "snow": {
+                "vru_mean_iou": 0.6094305153839848,
+                "class_iou": {
+                  "person": 0.8417344426250838,
+                  "rider": 0.32134831460674157,
+                  "bicycle": 0.6652087889201291
+                }
+              }
+            },
+            "W": 0.38575805519527545,
+            "weakest_conditions": [
+              "night"
+            ]
+          }
+        },
+        "delta_W_pp": 4.1299984336878985
+      },
+      "changes_from_full_validation_pp": {
+        "hrda": {
+          "affected_condition_V": 6.614959472329845,
+          "W": 0.0
+        },
+        "mic": {
+          "affected_condition_V": 10.341205704505596,
+          "W": 0.0
+        }
+      },
+      "change_in_delta_W_pp": 0.0,
+      "undefined_conditions": {
+        "hrda": [],
+        "mic": []
+      }
+    },
+    {
+      "omitted_condition": "snow",
+      "omitted_family": "recording_0607",
+      "omitted_sequence_aliases": [
+        "GOPR0607",
+        "GP010607",
+        "GP020607"
+      ],
+      "omitted_images": 17,
+      "remaining_condition_images": 83,
+      "remaining_validation_images": 389,
+      "omitted_rider_gt_pixels": 0,
+      "result": {
+        "models": {
+          "hrda": {
+            "conditions": {
+              "fog": {
+                "vru_mean_iou": 0.6972982805263174,
+                "class_iou": {
+                  "person": 0.7122139513853419,
+                  "rider": 0.7142798707407861,
+                  "bicycle": 0.6654010194528243
+                }
+              },
+              "night": {
+                "vru_mean_iou": 0.34445807085839647,
+                "class_iou": {
+                  "person": 0.41771973997327316,
+                  "rider": 0.11166711748264359,
+                  "bicycle": 0.5039873551192726
+                }
+              },
+              "rain": {
+                "vru_mean_iou": 0.6628623391189725,
+                "class_iou": {
+                  "person": 0.7517806420663274,
+                  "rider": 0.6720459518599562,
+                  "bicycle": 0.5647604234306338
+                }
+              },
+              "snow": {
+                "vru_mean_iou": 0.4858298870787136,
+                "class_iou": {
+                  "person": 0.787925374436918,
+                  "rider": 0.03041787174628503,
+                  "bicycle": 0.6391464150529377
+                }
+              }
+            },
+            "W": 0.34445807085839647,
+            "weakest_conditions": [
+              "night"
+            ]
+          },
+          "mic": {
+            "conditions": {
+              "fog": {
+                "vru_mean_iou": 0.7025126263268234,
+                "class_iou": {
+                  "person": 0.7018753193235784,
+                  "rider": 0.6995386158475426,
+                  "bicycle": 0.7061239438093494
+                }
+              },
+              "night": {
+                "vru_mean_iou": 0.38575805519527545,
+                "class_iou": {
+                  "person": 0.4699201771720271,
+                  "rider": 0.1388089240734077,
+                  "bicycle": 0.5485450643403915
+                }
+              },
+              "rain": {
+                "vru_mean_iou": 0.6587935041460921,
+                "class_iou": {
+                  "person": 0.7732263779577169,
+                  "rider": 0.6685796269727403,
+                  "bicycle": 0.5345745075078191
+                }
+              },
+              "snow": {
+                "vru_mean_iou": 0.507877955068463,
+                "class_iou": {
+                  "person": 0.8193056357338722,
+                  "rider": 0.029646522234891677,
+                  "bicycle": 0.6746817072366251
+                }
+              }
+            },
+            "W": 0.38575805519527545,
+            "weakest_conditions": [
+              "night"
+            ]
+          }
+        },
+        "delta_W_pp": 4.1299984336878985
+      },
+      "changes_from_full_validation_pp": {
+        "hrda": {
+          "affected_condition_V": 0.5593692594006439,
+          "W": 0.0
+        },
+        "mic": {
+          "affected_condition_V": 0.18594967295341158,
+          "W": 0.0
+        }
+      },
+      "change_in_delta_W_pp": 0.0,
+      "undefined_conditions": {
+        "hrda": [],
+        "mic": []
+      }
+    }
+  ],
+  "arithmetic_checks": {
+    "full_scores_match_saved_primary": true,
+    "GT_support_matches_between_models": true,
+    "every_subtraction_matches_direct_retained_image_sum": true
+  },
+  "limitations": [
+    "Post hoc descriptive sensitivity, not a new hypothesis test",
+    "Each omission changes the evaluated image mixture and sample size",
+    "Few recording families and sparse VRU support limit interpretation",
+    "Undefined scores are retained as null, not replaced by zero",
+    "No inference about retraining, demographic fairness or driving safety"
+  ]
+}

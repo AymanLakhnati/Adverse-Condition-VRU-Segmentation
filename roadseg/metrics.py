@@ -157,6 +157,14 @@ def _aligned_name(path, image_id):
     return stem == image_id or (stem.startswith(image_id) and stem[len(image_id):len(image_id) + 1] in ("_", "-", "."))
 
 
+def _sha256_file(path):
+    digest=hashlib.sha256()
+    with open(path,"rb") as handle:
+        for block in iter(lambda:handle.read(1024*1024),b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
 def evaluate_manifest(manifest_path, output, bootstrap_repeats=1000, seed=42, require_official_validation=False, path_root=None):
     """Evaluate explicit path pairs relative to manifest directory by default.
 
@@ -184,6 +192,7 @@ def evaluate_manifest(manifest_path, output, bootstrap_repeats=1000, seed=42, re
     if require_official_validation and counts != expected:
         raise ValueError(f"Original ACDC validation counts required: {expected}; got {counts}")
     records, matrices = [], []
+    verified_hashes=0
     used = {column: set() for column in required if column.endswith("path")}
     for row in frame.to_dict("records"):
         paths = {}
@@ -195,6 +204,11 @@ def evaluate_manifest(manifest_path, output, bootstrap_repeats=1000, seed=42, re
             if path in used[column]:
                 raise ValueError(f"Mask reused for multiple images: {path}")
             used[column].add(path)
+            expected_hash=row.get(column.removesuffix("_path")+"_sha256","")
+            if expected_hash:
+                if _sha256_file(path)!=expected_hash:
+                    raise ValueError(f"Manifest SHA256 mismatch for {column}: {path}")
+                verified_hashes+=1
             paths[column] = path
         if "labelTrainIds" not in paths["gt_path"].stem:
             raise ValueError("GT filename must explicitly identify labelTrainIds; no labelIds remapping is performed")
@@ -213,6 +227,7 @@ def evaluate_manifest(manifest_path, output, bootstrap_repeats=1000, seed=42, re
           caveat="Counts alone cannot verify official split membership or provenance",
           gt_encoding="trainIds 0..18; ignore 255", ground_truth_rows=True,
           mask_path_root=str(path_root),
+          verified_manifest_mask_sha256_count=verified_hashes,
           manifest_sha256=hashlib.sha256(manifest_path.read_bytes()).hexdigest())
     if bootstrap_repeats:
         summary["bootstrap"] = paired_bootstrap(matrices, frame.condition.to_numpy(), bootstrap_repeats, seed)
